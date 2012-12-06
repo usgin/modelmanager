@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block navhome %}{% endblock %}
+{% block navmodels %}class="active"{% endblock %}
+
+{% block styles %}
+<link href="/static/contentmodels/css/models.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="span4">
+    <ul class="nav nav-tabs nav-stacked models-nav affix">
+      {% for cm in contentmodels %}
+      <li>
+        <a href="#{{ cm.label }}"> {{ cm.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="span8">
+    {% for cm in contentmodels %}
+    <section id="{{ cm.label }}">
+      <h1>{{ cm.title }}</h1>
+      <div class="pull-right model-stats">
+        <div class="btn-group-vertical">
+          <a class="btn btn-primary disabled btn-small"><strong>Version {{ cm.latest_version_number }}</strong></a>
+          <a class="btn btn-small" href="{{ cm.absolute_latest_xsd_path }}"><i class="icon-file pull-left"></i> XML Schema Definition (.xsd)</a>
+          <a class="btn btn-small" href="{{ cm.absolute_latest_xls_path }}"><i class="icon-file pull-left"></i> Excel Template (.xls)</a>
+        </div>
+      </div>
+      <p>{{ cm.cleaned_description|safe }}</p>
+      <dl>
+        <dt>Discussion</dt>
+        <dd>{{ cm.cleaned_discussion|safe }}</dd>
+        <dt>Status</dt>
+        <dd>{{ cm.cleaned_status|safe }}</dd>
+      </dl>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Created</th>
+            <th>Files</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in cm.modelversion_set.all %}
+          <tr>
+            <td><span class="label label-success">Version {{ v.version }}</span></td>
+            <td>{{ v.date_created }}</td>
+            <td>
+              <div class="btn-group">
+                <a class="btn btn-info btn-mini" href="{{ v.absolute_xls_path }}">XLS</a>
+                <a class="btn btn-info btn-mini" href="{{ v.absolute_xsd_path }}">XSD</a>
+              </div>
+            </td>
+            <td>
+            {% if v.sample_wfs_request != '' %}
+              <a class="btn btn-info btn-mini" href="{{ v.sample_wfs_request }}">WFS GetFeature</a>
+            {% endif %}
+            </td>
+          {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <hr />
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

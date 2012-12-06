@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}WFS Validator{% endblock %}
+
+{% block navhome %}{% endblock %}
+{% block navvalidator %}class="active"{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="span12">
+    <div class="alert alert-{%if valid %}success{% else %}error{% endif %}">
+      <h3>{% if valid %}PASSED{% else %}FAILED{% endif %} VALIDATION</h3>
+    </div>
+    <hr>
+    {% if errors %}
+  	<ul class="unstyled">
+  		{% for error in errors %}
+  		<li>
+  		  <span class="label label-important">Error</span>
+  		  <span class="text-error">{{ error.message }}</span>
+  		</li>
+  		{% endfor %}
+  	</ul>
+  	<hr>
+  	{% endif %}
+  	<p><i class="icon-chevron-right"></i>  Here is the <a href="{{ url }}">WFS Response that you validated.</a></p>
+  	<p><i class="icon-chevron-right"></i>  Here is <a href="{{ modelversion.absolute_xsd_path }}">the schema document that was used to validate it.</a></p>
+  	<p><i class="icon-chevron-right"></i>  That schema document represents version {{ modelversion.version }} of the <a href="/models/#{{ modelversion.content_model.label }}">{{ modelversion.content_model.title }} content model</a>.</p>
+  	<p class="text-{% if valid %}success{% else %}warning{% endif %}"><i class="icon-chevron-right"></i>  There were {{ valid_elements }} valid {{ feature_type }} elements in the response.</p>
+  </div>
+</div>
+{% endblock %}

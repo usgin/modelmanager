@@ -1,0 +1,1 @@
+from wfs import validate_wfs_form

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}WFS Validator{% endblock %}
+
+{% block navhome %}{% endblock %}
+{% block navvalidator %}class="active"{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/validation/js/modelversions.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="span10 offset1">    
+    <form action="/validate/wfs" method="post" {% if url %}class="form-horizontal"{% endif %}>{% csrf_token %}
+      <legend><h1>Validate a WFS GetFeature Request</h1></legend>
+      {{ form.non_field_errors }}
+      <div>
+        {{ form.wfs_get_capabilities_url.errors }}
+        {{ form.wfs_get_capabilities_url }}
+      </div>
+      {% if url %}
+      <div class="control-group">
+        <span class="span10 uneditable-input">{{ url }}</span>
+      </div>
+    	{{ form.url }}
+    	<div class="control-group">
+        {{ form.feature_type.errors }}
+        <label for="id_feature_type" class="control-label">FeatureType:</label>
+        <div class="controls">
+          {{ form.feature_type }}
+        </div>
+    	</div>
+    	<div class="control-group">
+        {{ form.number_of_features.errors }}
+        <label for="number_of_features" class="control-label">Number of Features:</label>
+        <div class="controls">
+          {{ form.number_of_features }}
+        </div>
+    	</div>
+    	<legend>Choose the Model and Version to Validate Against</legend>
+    	<div class="control-group">
+        {{ form.content_model.errors }}
+        <label for="id_content_model" class="control-label">Content Model:</label>
+        <div class="controls">
+          {{ form.content_model }}
+        </div>
+    	</div>
+    	<div class="control-group">
+        {{ form.version.errors }}
+        <label for="id_version" class="control-label">Version:</label>
+        <div class="controls">
+          {{ form.version }}
+        </div>
+    	</div>
+    	{% endif %}
+      <input type="submit" value="Submit" class="btn btn-success">
+    </form>
+  </div>
+</div>
+{% endblock %}

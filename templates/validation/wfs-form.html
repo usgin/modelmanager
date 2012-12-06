@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WFS Validator</title>
+  </head>
+  <body>
+  	{% if url %}
+  	<p><a href="{{ url }}">{{ url }}</a></p>
+  	{% endif %}
+    <form action="/validate/wfs" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>

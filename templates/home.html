@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-unit">
+  <h1>Geoscience Content Models</h1>
+  <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+  <p><a class="btn btn-primary btn-large" href="/about/">Learn more &raquo;</a></p>
+</div>
+<div class="row">
+  <div class="span4">
+    <h2>Content Models</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn btn-info" href="/models/">View model details &raquo;</a></p>
+  </div>
+  <div class="span4">
+    <h2>WFS Validator</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn btn-info" href="/validate/wfs">Validate a WFS &raquo;</a></p>
+ </div>
+  <div class="span4">
+    <h2>Recently...</h2>
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Model Name</th>
+          <th>Version</th>
+      </thead>
+      <tbody>
+        {% for cm in recent_models %}
+        <tr>          
+          <td>{{ cm.date_updated }}</td>
+          <td><a href="/models/#{{ cm.label }}">{{ cm.title }}</td>
+          <td>{{ cm.latest_version_number }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

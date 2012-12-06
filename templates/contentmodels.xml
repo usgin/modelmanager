@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cm="http://schemas.usgin.org/contentmodels">
+  <title>{{ feed.title }}</title>
+  <subtitle>{{ feed.subtitle }}</subtitle>
+  <link href="{{ feed.url }}" rel="self" />
+  <updated>{{ feed.date }}T12:00:00-05:00</updated>
+  <author>
+    <name>{{ feed.author_name }}</name>
+    <email>{{ feed.author_email }}</email>
+  </author>
+  <id>{{ feed.id }}</id>
+  {% for cm in contentmodels %}
+  <entry>
+    <title>{{ cm.title }}</title>
+    <link rel="alternate" href="{{ cm.my_html }}" />
+    <updated>{{ cm.iso_date_updated }}T12:00:00-05:00</updated>
+    <id>{{ cm.absolute_uri }}</id>
+    <content type="application/xml">
+      <cm:title>{{ cm.title }}</cm:title>
+      <cm:uri>{{ cm.absolute_uri }}</cm:uri>
+      <cm:lastupdate>{{ cm.iso_date_updated }}T12:00:00-05:00</cm:lastupdate>
+      <cm:description>{{ cm.cleaned_description }}</cm:description>
+      <cm:discussion>{{ cm.cleaned_discussion }}</cm:discussion>
+      <cm:status>{{ cm.cleaned_status }}</cm:status>
+      <cm:versions>
+        {% for v in cm.modelversion_set.all %}
+        <cm:version>
+          <cm:number>{{ v.version }}</cm:number>
+          <cm:uri>{{ v.absolute_uri }}</cm:uri>
+          <cm:created>{{ v.iso_date_created }}T12:00:00-05:00</cm:created>
+          <cm:xlsfile>{{ v.absolute_xls_path }}</cm:xlsfile>
+          <cm:xsdfile>{{ v.absolute_xsd_path }}</cm:xsdfile>
+          <cm:wfsexample>{{ v.sample_wfs_request }}</cm:wfsexample>
+        </cm:version>
+        {% endfor %}
+      </cm:versions>
+    </content>      
+  </entry>
+  {% endfor %}
+</feed>

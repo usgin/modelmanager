@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% block title %}USGIN Content Models{% endblock %}</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/static/contentmodels/css/base.css" rel="stylesheet" />
+    {% block styles %}{% endblock %}
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="http://usgin.org">USGIN</a>
+          <a class="brand" href="http://geothermaldata.org">NGDS</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li {% block navhome %}class="active"{% endblock %}><a href="/home/">Home</a></li>
+              <li {% block navmodels %}{% endblock %}><a href="/models/">Models</a></li>
+              <li {% block navvalidator %}{% endblock %}><a href="/validate/wfs">WFS Validator</a></li>          
+            </ul>
+            <form class="navbar-form pull-right">
+              <input class="span2" type="text" placeholder="Email">
+              <input class="span2" type="password" placeholder="Password">
+              <button type="submit" class="btn">Sign in</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+      <hr>
+      <footer>
+        {% block footer %}
+        <p>&copy; Arizona Geological Survey 2012</p>
+        {% endblock %}
+      </footer>
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

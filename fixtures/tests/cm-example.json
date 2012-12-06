@@ -1,0 +1,83 @@
+[
+    {
+        "pk": 47,
+        "model": "uriredirect.acceptmapping",
+        "fields": {
+            "media_type": 1,
+            "rewrite_rule": 13,
+            "redirect_to": "http://localhost:8000/contentmodel/None.html"
+        }
+    },
+    {
+        "pk": 48,
+        "model": "uriredirect.acceptmapping",
+        "fields": {
+            "media_type": 2,
+            "rewrite_rule": 13,
+            "redirect_to": "http://localhost:8000/contentmodel/None.json"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "uriredirect.rewriterule",
+        "fields": {
+            "pattern": "^xmlschema/example/$",
+            "register": 1,
+            "description": "Redirection rule for Example ContentModel",
+            "label": "Example ContentModel"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "uriredirect.mediatype",
+        "fields": {
+            "file_extension": "html",
+            "mime_type": "text/html"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "uriredirect.mediatype",
+        "fields": {
+            "file_extension": "json",
+            "mime_type": "text/json"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "uriredirect.mediatype",
+        "fields": {
+            "file_extension": "xls",
+            "mime_type": "application/vnd.ms-excel"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "uriredirect.mediatype",
+        "fields": {
+            "file_extension": "xsd",
+            "mime_type": "application/xml"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "uriredirect.uriregister",
+        "fields": {
+            "url": "http://localhost:8000/uri-gin/",
+            "can_be_resolved": true,
+            "label": "aasg"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "modelmanager.contentmodel",
+        "fields": {
+            "status": "The status of the content model",
+            "rewrite_rule": 13,
+            "title": "Example ContentModel",
+            "discussion": "The discussion of the content model",
+            "label": "example",
+            "description": "The description of the content model"
+        }
+    }
+]

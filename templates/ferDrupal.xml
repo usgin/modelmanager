@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GoSuperDrupal>
+  {% for cm in contentmodels %}
+  <item>
+    <title>{{ cm.title }}</title>
+    <uri>{{ cm.absolute_uri }}</uri>
+    <lastupdate>{{ cm.iso_date_updated }}T12:00:00-05:00</lastupdate>
+    <description>{{ cm.cleaned_description }}</description>
+    <discussion>{{ cm.cleaned_discussion }}</discussion>
+    <status>{{ cm.cleaned_status }}</status>
+    {% for v in cm.modelversion_set.all %}
+    <version{{ forloop.counter }}number>{{ v.version }}</version{{ forloop.counter }}number>
+    <version{{ forloop.counter }}uri>{{ v.absolute_uri }}</version{{ forloop.counter }}uri>
+    <version{{ forloop.counter }}created>{{ v.iso_date_created }}T12:00:00-05:00</version{{ forloop.counter }}created>
+    <version{{ forloop.counter }}xlsfile>{{ v.absolute_xls_path }}</version{{ forloop.counter }}xlsfile>
+    <version{{ forloop.counter }}xsdfile>{{ v.absolute_xsd_path }}</version{{ forloop.counter }}xsdfile>
+    <version{{ forloop.counter }}wfsexample>{{ v.sample_wfs_request }}</version{{ forloop.counter }}wfsexample>
+    {% endfor %}
+  </item>
+  {% endfor %}
+</GoSuperDrupal>

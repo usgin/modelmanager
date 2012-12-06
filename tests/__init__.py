@@ -1,0 +1,2 @@
+from contentmodel import ContentModelTestCase
+from uriconfigure import UriConfigureTestCase

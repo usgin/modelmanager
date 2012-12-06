@@ -1,0 +1,64 @@
+<ul id="all-content-models">
+  {% for cm in contentmodels %}
+    <li id="content-model-{{ cm.id }}" class="content-model">
+      <dl>
+        <dt>Title: </dt>
+        <dd class='cm-title'>{{ cm.title }}</dd>
+        
+        <dt>URI: </dt>
+        <dd class='cm-uri'>
+          <a href="{{ cm.absolute_uri }}">{{ cm.absolute_uri }}</a>
+        </dd>
+        
+        <dt>Last Updated: </dt>
+        <dd class='cm-date-updated'>{{ cm.date_updated }}</dd>
+        
+        <dt>Description: </dt>
+        <dd class='cm-description'>{{ cm.cleaned_description|safe }}</dd>
+        
+        <dt>Discussion: </dt>
+        <dd class='cm-discussion'>{{ cm.cleaned_discussion|safe }}</dd>
+        
+        <dt>Status: </dt>
+        <dd class='cm-status'>{{ cm.cleaned_status|safe }}</dd>
+        
+        <dt>Available Versions: </dt>
+        <dd class='cm-versions'>
+          <ul>
+            {% for v in cm.modelversion_set.all %}
+              <li id="model-version-{{ v.id }}" class="model-version">
+                <dl>
+                  <dt>Version: </dt>
+                  <dd class='v-version'>{{ v.version }}</dd>
+                  
+                  <dt>URI: </dt>
+                  <dd class='v-uri'>
+                    <a href="{{ v.absolute_uri }}">{{ v.absolute_uri }}</a>
+                  </dd>
+                  
+                  <dt>Date Created: </dt>
+                  <dd class='v-date-created'>{{ v.date_created }}</dd>
+                  
+                  <dt>XLS file: </dt>
+                  <dd class='v-xls-file'>
+                    <a href="{{ v.absolute_xls_path }}">{{ v.xls_filename }}</a>
+                  </dd>
+                  
+                  <dt>XSD file: </dt>
+                  <dd class='v-xsd-file'>
+                    <a href="{{ v.absolute_xsd_path }}">{{ v.xsd_filename }}</a>
+                  </dd>
+                  
+                  <dt>Sample WFS Request: </dt>
+                  <dd class='v-wfs-request'>
+                    <a href="{{ v.sample_wfs_request }}">{{ v.sample_wfs_request }}</a>
+                  </dd>                                  
+                </dl>
+              </li>
+            {% endfor %}
+          </ul>
+        </dd>
+      </dl>
+    </li>
+  {% endfor %}
+</ul>

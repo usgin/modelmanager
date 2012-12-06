@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WFS Validator</title>
+  </head>
+  <body>
+  	<h2>The following WFS GetFeature Request was made:</h2>
+  	<div>
+  		<dl>
+  			<dt>Base URL: </dt>
+  			<dd>{{ wfs_base_url }}</dd>
+  			
+  			<dt>Feature Types: </dt>
+  			<dd>{{ feature_type }}</dd>
+  			
+  			<dt>Number of Features: </dt>
+  			<dd>{{ number_of_features }}</dd>
+  			
+  			<dt>Link to GetFeature Response: </dt>
+  			<dd><a href="{{ url }}">GetFeature Document</a></dd>
+  		</dl>
+  	</div>
+  	<h2>The response was validated against the following Content Model:</h2>
+  	<div>
+  		<dl>
+  			<dt>Model Name: </dt>
+  			<dd>{{ modelversion.content_model.title }}</dd>
+  			
+  			<dt>Model Version: </dt>
+  			<dd>{{ modelversion.version }}</dd>
+  			
+  			<dt>Link to XSD Document: </dt>
+  			<dd><a href="{{ modelversion.absolute_xsd_path }}">{{ modelversion.xsd_filename }}</a></dd>
+  		</dl>
+  	</div>
+  	<h2>The response <strong>{% if valid %}PASSED{% else %}FAILED{% endif %}</strong> validation.</h2>
+  	<p>The wfs:FeatureCollection contained {{ valid_elements }} valid {{ feature_type }} elements</p>
+  	{% if errors %}
+  	<ul>
+  		{% for error in errors %}
+  		<li>{{ error.message }}</li>
+  		{% endfor %}
+  	</ul>
+  	{% endif %}
+  </body>
+</html>
