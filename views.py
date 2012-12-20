@@ -115,8 +115,13 @@ class AtomFeed(object):
 # Homepage
 #--------------------------------------------------------------------------------------
 def homepage(req):
+  def recent(cm):
+    if cm.date_updated():
+      return cm.date_updated()
+    else:
+      return datetime(1900,1,1)
   models = list(ContentModel.objects.all())
-  models.sort(key=lambda cm: cm.date_updated(), reverse=True)
+  models.sort(key=lambda cm: recent(cm), reverse=True)
   return render_to_response('home.html', { 'recent_models': models[:3] })
   
 #--------------------------------------------------------------------------------------
