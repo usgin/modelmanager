@@ -1,7 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response
 from models import ContentModel
-from datetime import datetime
+from datetime import datetime, date
 import json
 
 #--------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ def homepage(req):
     if cm.date_updated():
       return cm.date_updated()
     else:
-      return datetime(1900,1,1)
+      return date(1900,1,1)
   models = list(ContentModel.objects.all())
   models.sort(key=lambda cm: recent(cm), reverse=True)
   return render_to_response('home.html', { 'recent_models': models[:3] })
