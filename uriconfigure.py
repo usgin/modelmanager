@@ -35,22 +35,22 @@ def get_media_type(kwargs):
 def XSD_MEDIA():
   return get_media_type({
       "mime_type": "application/xml",
-      "file_extension": "xsd"
+      "file_extension": ".xsd"
     })
 def XLS_MEDIA(): 
   return get_media_type({
       "mime_type": "application/vnd.ms-excel",
-      "file_extension": "xls"
+      "file_extension": ".xls"
     })
 def HTML_MEDIA():
   return get_media_type({
       "mime_type": "text/html",
-      "file_extension": "html"
+      "file_extension": ".html"
     })
 def JSON_MEDIA():
   return get_media_type({
       "mime_type": "text/json",
-      "file_extension": "json"
+      "file_extension": ".json"
     })
 
 #--------------------------------------------------------------------------------------
