@@ -26,7 +26,12 @@ def add_target_to_anchors(string_to_fix, target="_blank"):
     pattern = re.compile("<a(?P<attributes>.*?)>")
     
     def repl_func(matchobj):
-        return "<a%s target='%s'>" % (matchobj.group("attributes"), target)
+        pattern = re.compile("target=['\"].+?['\"]")
+        attributes = matchobj.group("attributes")
+        if pattern.search(attributes):
+            return "<a%s>" % re.sub(pattern, "target='%s'" % target, attributes)
+        else:
+            return "<a%s target='%s'>" % (attributes, target)
     
     return re.sub(pattern, repl_func, string_to_fix)    
  
@@ -147,15 +152,15 @@ class ContentModel(models.Model):
     
     # Return a discussion text where <a> tags have been given target="_blank" attributes
     def discussion_for_drupal(self):
-        return add_target_to_anchors(self.discussion)
+        return add_target_to_anchors(self.cleaned_discussion())
     
     # Return status text where <a> tags have been given target="_blank" attributes
     def status_for_drupal(self):
-        return add_target_to_anchors(self.status)
+        return add_target_to_anchors(self.cleaned_status())
     
     # Return description text where <a> tags have been given target="_blank" attributes
     def description_for_drupal(self):
-        return add_target_to_anchors(self.description)
+        return add_target_to_anchors(self.cleaned_description())
     
     # Return the instance as a dictionary that can be easily converted to JSON
     #     Include a list of versions relevant to this content model

@@ -116,6 +116,8 @@ class ContentModelTestCase(TestCase):
         self.assertEqual(add_target_to_anchors("no anchors"), "no anchors")
         self.assertEqual(add_target_to_anchors("something <a href='whatever'>hello</a>"), "something <a href='whatever' target='_blank'>hello</a>")
         self.assertEqual(add_target_to_anchors("something <a href='whatever'>hello</a> another <a href='http://google.com'>Google</a>"), "something <a href='whatever' target='_blank'>hello</a> another <a href='http://google.com' target='_blank'>Google</a>")
+        self.assertEqual(add_target_to_anchors("something <a href='whatever' target='_self'>hello</a>"), "something <a href='whatever' target='_blank'>hello</a>")
+        self.assertEqual(add_target_to_anchors('something <a href="whatever" target="_self">hello</a>'), 'something <a href="whatever" target=\'_blank\'>hello</a>')
         
     #Created by Genhan
     def test_absolute_latest_xsd_path_for_null(self):

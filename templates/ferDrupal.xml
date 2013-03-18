@@ -5,9 +5,9 @@
     <title>{{ cm.title }}</title>
     <uri>{{ cm.absolute_uri }}</uri>
     <lastupdate>{{ cm.iso_date_updated }}T12:00:00-05:00</lastupdate>
-    <description>{{ cm.cleaned_description }}</description>
-    <discussion>{{ cm.cleaned_discussion }}</discussion>
-    <status>{{ cm.cleaned_status }}</status>
+    <description>{{ cm.description_for_drupal }}</description>
+    <discussion>{{ cm.discussion_for_drupal }}</discussion>
+    <status>{{ cm.status_for_drupal }}</status>
     {% for v in cm.modelversion_set.all %}
     <version{{ forloop.counter }}number>{{ v.version }}</version{{ forloop.counter }}number>
     <version{{ forloop.counter }}uri>{{ v.absolute_uri }}</version{{ forloop.counter }}uri>
