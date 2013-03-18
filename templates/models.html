@@ -10,7 +10,7 @@
 {% block content %}
 <div class="row">
   <div class="span4">
-    <ul class="nav nav-tabs nav-stacked models-nav affix">
+    <ul class="nav nav-tabs nav-stacked models-nav">
       {% for cm in contentmodels %}
       <li>
         <a href="#{{ cm.label }}"> {{ cm.title }}</a>
@@ -20,8 +20,8 @@
   </div>
   <div class="span8">
     {% for cm in contentmodels %}
-    <section id="{{ cm.label }}">
-      <h1>{{ cm.title }}</h1>
+    <section class="clearfix">      
+      <h1><span id="{{ cm.label }}" class="model-spacer"></span>{{ cm.title }}</h1>      
       <div class="pull-right model-stats">
         <div class="btn-group-vertical">
           <a class="btn btn-primary disabled btn-small"><strong>Version {{ cm.latest_version_number }}</strong></a>
@@ -65,8 +65,10 @@
           </tr>
         </tbody>
       </table>
-    </section>
     <hr />
+    <span class="muted pull-right"><span class="icon-arrow-up"></span><a href="#">Back to top</a></span>
+    </section>
+    
     {% endfor %}
   </div>
 </div>

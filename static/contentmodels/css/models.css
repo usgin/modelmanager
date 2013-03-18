@@ -2,3 +2,12 @@
   padding-left: 8px;
   padding-bottom: 4px;
 }
+
+h1 {
+    position: relative;
+}
+
+h1 .model-spacer {
+    position: absolute;
+    top: -80px;
+}
