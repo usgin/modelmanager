@@ -31,7 +31,7 @@
         "pk": 1,
         "model": "uriredirect.mediatype",
         "fields": {
-            "file_extension": "html",
+            "file_extension": ".html",
             "mime_type": "text/html"
         }
     },
@@ -39,7 +39,7 @@
         "pk": 2,
         "model": "uriredirect.mediatype",
         "fields": {
-            "file_extension": "json",
+            "file_extension": ".json",
             "mime_type": "text/json"
         }
     },
@@ -47,7 +47,7 @@
         "pk": 3,
         "model": "uriredirect.mediatype",
         "fields": {
-            "file_extension": "xls",
+            "file_extension": ".xls",
             "mime_type": "application/vnd.ms-excel"
         }
     },
@@ -55,7 +55,7 @@
         "pk": 4,
         "model": "uriredirect.mediatype",
         "fields": {
-            "file_extension": "xsd",
+            "file_extension": ".xsd",
             "mime_type": "application/xml"
         }
     },
