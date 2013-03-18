@@ -21,6 +21,15 @@ def get_file_path(instance, filename):
 def removeTags(string_to_clean):
     return re.sub('</(?!a)[^>]*>|<[^/a][^>]*>|&nbsp;', '', string_to_clean)
 
+def add_target_to_anchors(string_to_fix, target="_blank"):
+    """Given arbitrary string, find <a> tags and add target attributes"""
+    pattern = re.compile("<a(?P<attributes>.*?)>")
+    
+    def repl_func(matchobj):
+        return "<a%s target='%s'>" % (matchobj.group("attributes"), target)
+    
+    return re.sub(pattern, repl_func, string_to_fix)    
+ 
 #--------------------------------------------------------------------------------------
 # This class represent specific USGIN content-models, which are built to convey
 #     specific types of geoscience information.
@@ -135,7 +144,19 @@ class ContentModel(models.Model):
     def rewrite_rule_link(self):
         return '<a href="/admin/uriredirect/rewriterule/%s">Edit Rule</a>' % self.rewrite_rule.pk
     rewrite_rule_link.allow_tags = True
-        
+    
+    # Return a discussion text where <a> tags have been given target="_blank" attributes
+    def discussion_for_drupal(self):
+        return add_target_to_anchors(self.discussion)
+    
+    # Return status text where <a> tags have been given target="_blank" attributes
+    def status_for_drupal(self):
+        return add_target_to_anchors(self.status)
+    
+    # Return description text where <a> tags have been given target="_blank" attributes
+    def description_for_drupal(self):
+        return add_target_to_anchors(self.description)
+    
     # Return the instance as a dictionary that can be easily converted to JSON
     #     Include a list of versions relevant to this content model
     def serialized(self):

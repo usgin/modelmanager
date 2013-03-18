@@ -72,12 +72,12 @@
         "pk": 4,
         "model": "modelmanager.contentmodel",
         "fields": {
-            "status": "The status of the content model",
+            "status": "The status of the content model <a href='http://google.com/'>Fake Anchor</a>",
             "rewrite_rule": 13,
             "title": "Example ContentModel",
-            "discussion": "The discussion of the content model",
+            "discussion": "The discussion of the content model <a href='http://google.com/'>Fake Anchor</a>",
             "label": "example",
-            "description": "The description of the content model"
+            "description": "The description of the content model <a href='http://google.com/'>Fake Anchor</a>"
         }
     }
 ]
