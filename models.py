@@ -162,6 +162,10 @@ class ContentModel(models.Model):
     def description_for_drupal(self):
         return add_target_to_anchors(self.cleaned_description())
     
+    # Return the most recent three versions, most recent first
+    def recent_versions(self):
+        return self.modelversion_set.order_by("-date_created")[:3]
+    
     # Return the instance as a dictionary that can be easily converted to JSON
     #     Include a list of versions relevant to this content model
     def serialized(self):

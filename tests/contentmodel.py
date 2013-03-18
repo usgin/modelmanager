@@ -118,7 +118,14 @@ class ContentModelTestCase(TestCase):
         self.assertEqual(add_target_to_anchors("something <a href='whatever'>hello</a> another <a href='http://google.com'>Google</a>"), "something <a href='whatever' target='_blank'>hello</a> another <a href='http://google.com' target='_blank'>Google</a>")
         self.assertEqual(add_target_to_anchors("something <a href='whatever' target='_self'>hello</a>"), "something <a href='whatever' target='_blank'>hello</a>")
         self.assertEqual(add_target_to_anchors('something <a href="whatever" target="_self">hello</a>'), 'something <a href="whatever" target=\'_blank\'>hello</a>')
-        
+    
+    def test_recent_versions(self):
+        """The model's recent_versions method should return the most recent three versions, from current to 2nd oldest"""
+        v = self.createTwoVersions()
+        output = self.example.recent_versions()
+        self.assertEqual(output[0].version, v["new"].version)
+        self.assertEqual(output[1].version, v["old"].version)        
+            
     #Created by Genhan
     def test_absolute_latest_xsd_path_for_null(self):
         """When there are no versions the absolute path to the latest version's XSD file is none"""
