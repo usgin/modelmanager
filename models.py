@@ -19,7 +19,8 @@ def get_file_path(instance, filename):
 # Function that strips HTML tags (except anchors) from strings         
 #--------------------------------------------------------------------------------------
 def removeTags(string_to_clean):
-    return re.sub('</(?!a)[^>]*>|<[^/a][^>]*>|&nbsp;', '', string_to_clean)
+    cleaned = re.sub('</(?!a)[^>]*>|<[^/a][^>]*>', '', string_to_clean)
+    return re.sub('&nbsp;', ' ', cleaned)
 
 def add_target_to_anchors(string_to_fix, target="_blank"):
     """Given arbitrary string, find <a> tags and add target attributes"""
