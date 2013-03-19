@@ -4,6 +4,7 @@
   <item>
     <title>{{ cm.title }}</title>
     <uri>{{ cm.absolute_uri }}</uri>
+    <homeurl>{{ cm.my_pretty_html }}</homeurl>
     <lastupdate>{{ cm.iso_date_updated }}T12:00:00-05:00</lastupdate>
     <description>{{ cm.description_for_drupal }}</description>
     <discussion>{{ cm.discussion_for_drupal }}</discussion>

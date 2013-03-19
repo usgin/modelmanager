@@ -119,6 +119,10 @@ class ContentModel(models.Model):
         else: return None
     latest_xls_link.allow_tags = True
     
+    # Construct the link for the nice-looking HTML for a particular model
+    def my_pretty_html(self):
+        return "%s/models/#%s" % (settings.BASE_URL.rstrip("/"), self.label)
+    
     # Provide a URL for this ContentModel as HTML. Needs to be in sync with urls.py.
     def my_html(self):
         return '%s/contentmodel/%s.html' % (settings.BASE_URL.rstrip('/'), self.pk)

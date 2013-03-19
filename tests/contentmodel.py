@@ -125,7 +125,11 @@ class ContentModelTestCase(TestCase):
         output = self.example.recent_versions()
         self.assertEqual(output[0].version, v["new"].version)
         self.assertEqual(output[1].version, v["old"].version)        
-            
+    
+    def test_my_pretty_html(self):
+        """The model's my_pretty_html method should return the complete URL for the model's bootstrap page"""
+        self.assertEqual(self.example.my_pretty_html(), "%s/models/#%s" % (settings.BASE_URL.rstrip("/"), self.example.label))
+                
     #Created by Genhan
     def test_absolute_latest_xsd_path_for_null(self):
         """When there are no versions the absolute path to the latest version's XSD file is none"""
