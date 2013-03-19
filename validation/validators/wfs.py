@@ -59,7 +59,7 @@ class WfsValidationParametersForm(forms.Form):
     number_of_features = forms.IntegerField(
         widget=forms.Select(
             attrs={'class':'span1'},
-            choices=((1,1), (10,10), (50, 50))
+            choices=((1,1), (10,10), (50, 50), (99, "All"))
         )
     )
 
@@ -97,7 +97,7 @@ def validate_wfs_form(req):
                         "errors": result.errors,
                         "modelversion": modelversion,
                         "feature_type": feature_type,
-                        "number_of_features": number_of_features,
+                        "number_of_features": "a lot of" if number_of_features == 99 else number_of_features,
                         "wfs_base_url": get_feature_validator.url.split('?')[0]
                     }
                 
