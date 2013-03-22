@@ -1,0 +1,59 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.1",
+    "basePath": "{{ host }}",
+    "resourcePath": "/contentmodels.{dataFormat}",
+    "apis": [
+        {
+            "path": "/contentmodels.{dataFormat}",
+            "description": "List of available content models",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "listContentModels",
+                    "responseClass": "ContentModelList",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "dataFormat",
+                            "description": "Format in which to return the list",
+                            "dataType": "String",
+                            "required": true,
+                            "allowableValues": {
+                                "valueType": "LIST",
+                                "values": [
+                                    "json",
+                                    "html",
+                                    "drupal",
+                                    "xml"
+                                ]
+                            }
+                        }
+                    ],
+                    "summary": "List available content models",
+                    "notes": "View all content models and their available versions",
+                    "errorResponses": []
+                }
+            ]
+        }
+    ],
+    "models": {
+        "ContentModelList": {
+            "id": "ContentModelList",
+            "type": "List",
+            "description": "A list of content models",
+            "items": {
+                "$ref": "ContentModel"
+            }
+        },
+        "ContentModel": {
+            "id": "ContentModel",
+            "properties": {
+                "title": {
+                    "type": "String",
+                    "description": "The title of the content model"
+                }
+            }
+        }
+    }
+}

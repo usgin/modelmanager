@@ -1,0 +1,113 @@
+{
+    "apiVersion": "1.0",
+    "swaggerVersion": "1.1",
+    "basePath": "{{ host }}",
+    "resourcePath": "/contentmodel/{modelId}.{dataFormat}",
+    "apis": [
+        {
+            "path": "/contentmodel/{modelId}.{dataFormat}",
+            "description": "View details of a single model",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "detailedContentModel",
+                    "responseClass": "ContentModel",
+                    "summary": "Display detailed information about a single content model",
+                    "notes": "",
+                    "errorResponses": [],
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "modelId",
+                            "description": "Primary key identifier for a particular model",
+                            "dataType": "int",
+                            "required": true
+                        }, {
+                            "paramType": "path",
+                            "name": "dataFormat",
+                            "description": "Format in which to return the model",
+                            "dataType": "String",
+                            "required": true,
+                            "allowableValues": {
+                                "valueType": "LIST",
+                                "values": [
+                                    "json",
+                                    "html",
+                                    "xml"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "ContentModel": {
+            "id": "ContentModel",
+            "properties": {
+                "title": {
+                    "type": "String",
+                    "description": "The title of the content model"
+                },
+                "uri": {
+                    "type": "String",
+                    "description": "The URI for the content model"
+                },
+                "description": {
+                    "type": "String",
+                    "description": "A Description of the content model"
+                },
+                "discussion": {
+                    "type": "String",
+                    "description": "A short discussion on the envisioned usage of the content model"
+                },
+                "status": {
+                    "type": "String",
+                    "description": "A short discussion of the status of the content model"
+                },
+                "date_updated": {
+                    "type": "Date",
+                    "description": "The date the content model was last updated"
+                },
+                "versions": {
+                    "type": "List",
+                    "description": "Versions of the content model that have been published",
+                    "items": {
+                        "$ref": "ModelVersion"
+                    }
+                }
+            }
+        },
+        "ModelVersion": {
+            "id": "ModelVersion",
+            "description": "A single version of a content model",
+            "properties": {
+                "uri": {
+                    "type": "String",
+                    "description": "The URI for the model version"
+                },
+                "version": {
+                    "type": "String",
+                    "description": "The version identifier for the model version"
+                },
+                "date_created": {
+                    "type": "Date",
+                    "description": "The date that the model version was created"
+                },
+                "xsd_file_path": {
+                    "type": "String",
+                    "description": "The URL for an .xsd document representing the model version"
+                },
+                "xls_file_path": {
+                    "type": "String",
+                    "description": "The URL for an .xls document representing the model version"
+                },
+                "sample_wfs_request": {
+                    "type": "String",
+                    "description": "A complete WFS GetFeature request demonstrating data formatted according to this model version"
+                }
+            }
+        }
+    }
+}
