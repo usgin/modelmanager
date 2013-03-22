@@ -20,7 +20,7 @@
 	$(function () {
 	    window.swaggerUi = new SwaggerUi({
                 discoveryUrl:"{{ swagger }}",
-                apiKey:"special-key",
+                "apiKeyName": null,
                 dom_id:"swagger-ui-container",
                 supportHeaderParams: false,
                 supportedSubmitMethods: ['get', 'post', 'put'],
