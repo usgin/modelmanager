@@ -297,10 +297,9 @@ class ModelVersion(models.Model):
         return [
             {
                 "name": element.get("name"),
-                "type": element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))[3:],
+                "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
                 "optional": True if element.get("minOccurs", "1") == "0" else False,
                 "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
-                #"description": element.xpath("xs:annotation/xs:documentation/string()", namespaces=ns)
             }
             for element in schema.xpath("//xs:sequence/xs:element", namespaces=ns)
         ]
