@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404
-from django.shortcuts import render_to_response, render
-from models import ContentModel
+from django.shortcuts import render_to_response, render, get_object_or_404
+from models import ContentModel, ModelVersion
 from datetime import datetime, date
 import json
 
@@ -148,3 +148,10 @@ def swagger(request, path):
 def swaggerui(request):
     swagger_url = "http://%s/swagger" % request.META.get("HTTP_HOST")
     return render(request, "swagger/swagger.html", {"swagger": swagger_url})
+
+#--------------------------------------------------------------------------------------
+# FeatureCatalogues
+#--------------------------------------------------------------------------------------
+def get_feature_catalog(request, id):
+    v = get_object_or_404(ModelVersion, pk=id)
+    return render(request, "featureCatalog.xml", {"version": v}, content_type="text/xml")

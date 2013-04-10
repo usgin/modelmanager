@@ -272,10 +272,39 @@ class ModelVersion(models.Model):
             'date_created': self.date_created.isoformat(),
             'xsd_file_path': self.absolute_xsd_path(),
             'xls_file_path': self.absolute_xls_path(),
-            'sample_wfs_request': self.sample_wfs_request
+            'sample_wfs_request': self.sample_wfs_request,
+            'field_info': self.field_info()
         }        
         return as_json
-        
+
+    # Parse a schema document to find details about fields
+    def field_info(self):
+        schema_file = open(self.xsd_file.path, 'r')
+        schema = etree.parse(schema_file)
+        ns = {
+            "gco": "http://isotc211.org/2005/gco",
+            "gmd": "http://isotc211.org/2005/gmd",
+            "gmx": "http://isotc211.org/2005/gmx",
+            "gss": "http://isotc211.org/2005/gss",
+            "gfc": "http://isotc211.org/2005/gfc",
+            "gsr": "http://isotc211.org/2005/gsr",
+            "gts": "http://isotc211.org/2005/gts",
+            "gml": "http://www.opengis.net/gml/3.2",
+            "xlink": "http://www.w3.org/1999/xlink",
+            "xs": "http://www.w3.org/2001/XMLSchema"
+        }
+
+        return [
+            {
+                "name": element.get("name"),
+                "type": element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))[3:],
+                "optional": True if element.get("minOccurs", "1") == "0" else False,
+                "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
+                #"description": element.xpath("xs:annotation/xs:documentation/string()", namespaces=ns)
+            }
+            for element in schema.xpath("//xs:sequence/xs:element", namespaces=ns)
+        ]
+
 #--------------------------------------------------------------------------------------
 # Register a function to fire before ModelVersion and ContentModel objects are saved
 #--------------------------------------------------------------------------------------        
