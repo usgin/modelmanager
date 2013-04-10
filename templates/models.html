@@ -4,72 +4,107 @@
 {% block navmodels %}class="active"{% endblock %}
 
 {% block styles %}
-<link href="/static/contentmodels/css/models.css" rel="stylesheet" />
+    <link href="/static/contentmodels/css/models.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="span4">
-    <ul class="nav nav-tabs nav-stacked models-nav">
-      {% for cm in contentmodels %}
-      <li>
-        <a href="#{{ cm.label }}"> {{ cm.title }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  <div class="span8">
-    {% for cm in contentmodels %}
-    <section class="clearfix">      
-      <h1><span id="{{ cm.label }}" class="model-spacer"></span>{{ cm.title }}</h1>      
-      <div class="pull-right model-stats">
-        <div class="btn-group-vertical">
-          <a class="btn btn-primary disabled btn-small"><strong>Version {{ cm.latest_version_number }}</strong></a>
-          <a class="btn btn-small" href="{{ cm.absolute_latest_xsd_path }}"><i class="icon-file pull-left"></i> XML Schema Definition (.xsd)</a>
-          <a class="btn btn-small" href="{{ cm.absolute_latest_xls_path }}"><i class="icon-file pull-left"></i> Excel Template (.xls)</a>
+    <div class="row">
+        <div class="span4">
+            <ul class="nav nav-tabs nav-stacked models-nav">
+                {% for cm in contentmodels %}
+                    <li>
+                        <a href="#{{ cm.label }}"> {{ cm.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
-      </div>
-      <p>{{ cm.cleaned_description|safe }}</p>
-      <dl>
-        <dt>Discussion</dt>
-        <dd>{{ cm.cleaned_discussion|safe }}</dd>
-        <dt>Status</dt>
-        <dd>{{ cm.cleaned_status|safe }}</dd>
-      </dl>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Created</th>
-            <th>Files</th>
-            <th>Example</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for v in cm.modelversion_set.all %}
-          <tr>
-            <td><span class="label label-success">Version {{ v.version }}</span></td>
-            <td>{{ v.date_created }}</td>
-            <td>
-              <div class="btn-group">
-                <a class="btn btn-info btn-mini" href="{{ v.absolute_xls_path }}">XLS</a>
-                <a class="btn btn-info btn-mini" href="{{ v.absolute_xsd_path }}">XSD</a>
-              </div>
-            </td>
-            <td>
-            {% if v.sample_wfs_request != '' %}
-              <a class="btn btn-info btn-mini" href="{{ v.sample_wfs_request }}">WFS GetFeature</a>
-            {% endif %}
-            </td>
-          {% endfor %}
-          </tr>
-        </tbody>
-      </table>
-    <hr />
-    <span class="muted pull-right"><span class="icon-arrow-up"></span><a href="#">Back to top</a></span>
-    </section>
-    
-    {% endfor %}
-  </div>
-</div>
+        <div class="span8">
+            {% for cm in contentmodels %}
+                <section class="clearfix">
+                    <h1><span id="{{ cm.label }}" class="model-spacer"></span>{{ cm.title }}</h1>
+
+                    <div class="pull-right model-stats">
+                        <div class="btn-group-vertical">
+                            <a class="btn btn-primary disabled btn-small"><strong>Version {{ cm.latest_version_number }}</strong></a>
+                            <a class="btn btn-small" href="{{ cm.absolute_latest_xsd_path }}"><i
+                                    class="icon-file pull-left"></i> XML Schema Definition (.xsd)</a>
+                            <a class="btn btn-small" href="{{ cm.absolute_latest_xls_path }}"><i
+                                    class="icon-file pull-left"></i> Excel Template (.xls)</a>
+                        </div>
+                    </div>
+                    <p>{{ cm.cleaned_description|safe }}</p>
+                    <dl>
+                        <div class="field-container">
+                            <dt class="field-opener"><span
+                                    class="pull-right label label-success">Version {{ cm.latest_version_number }}</span>
+                                <span class="icon-chevron-right"></span> <a data-toggle="collapse"
+                                                                            href="#field-table-{{ cm.label }}">Field
+                                    List</a></dt>
+                            <dd>
+                                <div id="field-table-{{ cm.label }}" class="collapse">
+                                    <em class="text-warning">-- fields in yellow are required --</em>
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for ele in cm.latest_version.field_info %}
+                                            <tr {% if not ele.optional %}class="warning"{% endif %}>
+                                                <td>{{ ele.name }} ({{ ele.type }})</td>
+                                                <td>{{ ele.description }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <a class="pull-right" data-toggle="collapse" href="#field-table-{{ cm.label }}"><span
+                                            class="icon-chevron-up"></span>Collapse Field
+                                        List</a>
+                                </div>
+                            </dd>
+                        </div>
+                        <dt>Discussion</dt>
+                        <dd>{{ cm.cleaned_discussion|safe }}</dd>
+                        <dt>Status</dt>
+                        <dd>{{ cm.cleaned_status|safe }}</dd>
+                    </dl>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Created</th>
+                            <th>Files</th>
+                            <th>Example</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for v in cm.modelversion_set.all %}
+                            <tr>
+                            <td><span class="label label-success">Version {{ v.version }}</span></td>
+                            <td>{{ v.date_created }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-info btn-mini" href="{{ v.absolute_xls_path }}">XLS</a>
+                                    <a class="btn btn-info btn-mini" href="{{ v.absolute_xsd_path }}">XSD</a>
+                                </div>
+                            </td>
+                            <td>
+                                {% if v.sample_wfs_request != '' %}
+                                    <a class="btn btn-info btn-mini" href="{{ v.sample_wfs_request }}">WFS
+                                        GetFeature</a>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        </tr>
+                        </tbody>
+                    </table>
+                    <hr/>
+                    <span class="muted pull-right"><span class="icon-arrow-up"></span><a href="#">Back to top</a></span>
+                </section>
+
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

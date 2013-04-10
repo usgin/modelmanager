@@ -11,3 +11,17 @@ h1 .model-spacer {
     position: absolute;
     top: -80px;
 }
+
+
+
+.field-container {
+    padding: 8px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-bottom: 14px;
+}
+
+.field-container > dd > .in > table{
+    margin-top: 8px;
+    border-top: 1px solid lightgrey;
+}
