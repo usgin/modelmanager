@@ -304,6 +304,21 @@ class ModelVersion(models.Model):
             for element in schema.xpath("//xs:sequence/xs:element", namespaces=ns)
         ]
 
+    # Parse a schema document to determine the target namespace and type
+    def type_details(self):
+        schema_file = open(self.xsd_file.path, "r")
+        schema = etree.parse(schema_file)
+        ns = {
+            "xs": "http://www.w3.org/2001/XMLSchema"
+        }
+
+        class type_details(object):
+            namespace = next(iter(schema.xpath("/xs:schema/@targetNamespace", namespaces=ns)), "")
+            typename = next(iter(schema.xpath("/xs:schema/xs:element/@type", namespaces=ns)), "").replace("Type", "")
+            prefix = re.match("^(?P<prefix>.*):", typename).group("prefix")
+
+        return type_details()
+
 #--------------------------------------------------------------------------------------
 # Register a function to fire before ModelVersion and ContentModel objects are saved
 #--------------------------------------------------------------------------------------        

@@ -4,9 +4,10 @@
                          xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2"
                          xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:gsr="http://www.isotc211.org/2005/gsr"
                          xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts"
-                         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                         xsi:schemaLocation="http://www.isotc211.org/2005/gfc http://www.isotc211.org/2005/gfc/gfc.xsd"
-                         uuid="87ffdfd0-775a-11e0-a1f0-0800200c9a66">
+                         xmlns:{{ version.type_details.prefix }}="{{ version.type_details.namespace }}"
+                         xmlns:xlink="http://www.w3.org/1999/xlink"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="http://www.isotc211.org/2005/gfc http://www.isotc211.org/2005/gfc/gfc.xsd">
 
     <gmx:name>
         <gco:CharacterString>Feature Catalogue for {{ version }}</gco:CharacterString>
@@ -18,7 +19,9 @@
         <gco:CharacterString>eng</gco:CharacterString>
     </gmx:language>
     <gmx:characterSet>
-        <gmd:MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="004"/>
+        <gmd:MD_CharacterSetCode
+                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode"
+                codeListValue="utf8" codeSpace="004"/>
     </gmx:characterSet>
     <gfc:producer>
         <gmd:CI_ResponsibleParty>
@@ -59,17 +62,20 @@
                 </gmd:CI_Contact>
             </gmd:contactInfo>
             <gmd:role>
-                <gmd:CI_RoleCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="curator">curator</gmd:CI_RoleCode>
+                <gmd:CI_RoleCode
+                        codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
+                        codeListValue="curator">curator
+                </gmd:CI_RoleCode>
             </gmd:role>
         </gmd:CI_ResponsibleParty>
     </gfc:producer>
     <gfc:featureType>
         <gfc:FC_FeatureType id="{{ version.content_model.label }}-v-{{ version.version }}">
             <gfc:typeName>
-                <gco:LocalName>{{ version }}</gco:LocalName>
+                <gco:LocalName>{{ version.type_details.typename }}</gco:LocalName>
             </gfc:typeName>
             <gfc:definition>
-                <gco:CharacterString>CTD Header Information</gco:CharacterString>
+                <gco:CharacterString><![CDATA[{{ version.content_model.cleaned_description }}]]></gco:CharacterString>
             </gfc:definition>
             <gfc:code>
                 <gco:CharacterString>{{ version.absolute_uri }}</gco:CharacterString>
@@ -77,54 +83,72 @@
             <gfc:isAbstract>
                 <gco:Boolean>false</gco:Boolean>
             </gfc:isAbstract>
-            <gfc:featureCatalogue uuidref="87ffdfd0-775a-11e0-a1f0-0800200c9a66"/>
+            <gfc:featureCatalogue nilReason="missing"/>
             {% for field in version.field_info %}
-            <gfc:carrierOfCharacteristics>
-                <gfc:FC_FeatureAttribute>
-                    <gfc:memberName>
-                        <gco:LocalName>{{ field.name }}</gco:LocalName>
-                    </gfc:memberName>
-                    <gfc:definition>
-                        <gco:CharacterString>{{ field.description }}</gco:CharacterString>
-                    </gfc:definition>
-                    <gfc:cardinality>
-                        <gco:Multiplicity>
-                            <gco:range>
-                                <gco:MultiplicityRange>
-                                    <gco:lower>
-                                        <gco:Integer>
-                                            {% if field.optional %}
-                                            0
-                                            {% else %}
-                                            1
-                                            {% endif %}
-                                        </gco:Integer>
-                                    </gco:lower>
-                                    <gco:upper>
-                                        <gco:UnlimitedInteger>1</gco:UnlimitedInteger>
-                                    </gco:upper>
-                                </gco:MultiplicityRange>
-                            </gco:range>
-                        </gco:Multiplicity>
-                    </gfc:cardinality>
-                    <gfc:definitionReference>
-                        <gfc:FC_DefinitionReference>
-                            <gfc:definitionSource>
-                                <gfc:FC_DefinitionSource>
-                                    <gfc:source xlink:href="#UUID of citation for containing catalog"/>
-                                </gfc:FC_DefinitionSource>
-                            </gfc:definitionSource>
-                        </gfc:FC_DefinitionReference>
-                    </gfc:definitionReference>
-                    <valueType>
-                        <gco:TypeName>
-                            <gco:aName>
-                                <gco:CharacterString>{{ field.type }}</gco:CharacterString>
-                            </gco:aName>
-                        </gco:TypeName>
-                    </valueType>
-                </gfc:FC_FeatureAttribute>
-            </gfc:carrierOfCharacteristics>
+                <gfc:carrierOfCharacteristics>
+                    <gfc:FC_FeatureAttribute>
+                        <gfc:memberName>
+                            <gco:LocalName>{{ field.name }}</gco:LocalName>
+                        </gfc:memberName>
+                        <gfc:definition>
+                            <gco:CharacterString>{{ field.description }}</gco:CharacterString>
+                        </gfc:definition>
+                        <gfc:cardinality>
+                            <gco:Multiplicity>
+                                <gco:range>
+                                    <gco:MultiplicityRange>
+                                        <gco:lower>
+                                            <gco:Integer>
+                                                {% if field.optional %}
+                                                    0
+                                                {% else %}
+                                                    1
+                                                {% endif %}
+                                            </gco:Integer>
+                                        </gco:lower>
+                                        <gco:upper>
+                                            <gco:UnlimitedInteger isInfinite="false">1</gco:UnlimitedInteger>
+                                        </gco:upper>
+                                    </gco:MultiplicityRange>
+                                </gco:range>
+                            </gco:Multiplicity>
+                        </gfc:cardinality>
+                        <gfc:definitionReference>
+                            <gfc:FC_DefinitionReference>
+                                <gfc:definitionSource>
+                                    <gfc:FC_DefinitionSource>
+                                        <gfc:source>
+                                            <gmd:CI_Citation>
+                                                <gmd:title>USGIN Content Model Catalog</gmd:title>
+                                                <gmd:date>
+                                                    <gmd:CI_Date>
+                                                        <gmd:date>
+                                                            <gco:Date>2013-04-10</gco:Date>
+                                                        </gmd:date>
+                                                        <gmd:dateType>
+                                                            <gmd:CI_DateTypeCode
+                                                                    codelist="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                                                                    codeListValue="publication">
+                                                                publication
+                                                            </gmd:CI_DateTypeCode>
+                                                        </gmd:dateType>
+                                                    </gmd:CI_Date>
+                                                </gmd:date>
+                                            </gmd:CI_Citation>
+                                        </gfc:source>
+                                    </gfc:FC_DefinitionSource>
+                                </gfc:definitionSource>
+                            </gfc:FC_DefinitionReference>
+                        </gfc:definitionReference>
+                        <valueType>
+                            <gco:TypeName>
+                                <gco:aName>
+                                    <gco:CharacterString>{{ field.type }}</gco:CharacterString>
+                                </gco:aName>
+                            </gco:TypeName>
+                        </valueType>
+                    </gfc:FC_FeatureAttribute>
+                </gfc:carrierOfCharacteristics>
             {% endfor %}
         </gfc:FC_FeatureType>
     </gfc:featureType>
