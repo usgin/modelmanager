@@ -77,8 +77,13 @@ class WfsCapabilities(WfsBase):
             return None
 
             
-        # Append query parameters and return
+        # Pull the base_url from the list returned by the xpath() method
         if len(base_url) > 0: base_url = base_url[0]
+
+        # Make sure there's a ? after the base_url
+        base_url = "%s?" % base_url.rstrip("?")
+
+        # Build the GetFeature URL
         param_values = (base_url, self.version, feature_type_name)
         url = "%s&service=WFS&version=%s&request=GetFeature&typename=%s" % param_values
         if number_of_features == 99:
