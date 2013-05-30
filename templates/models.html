@@ -89,8 +89,12 @@
                                 <div class="btn-group">
                                     <a class="btn btn-info btn-mini" href="{{ v.absolute_xls_path }}">XLS</a>
                                     <a class="btn btn-info btn-mini" href="{{ v.absolute_xsd_path }}">XSD</a>
+                                    {% if v.sld_file %}
                                     <a class="btn btn-info btn-mini" href="{{ v.absolute_sld_path }}">SLD</a>
+                                    {% endif %}
+                                    {% if v.lyr_file %}
                                     <a class="btn btn-info btn-mini" href="{{ v.absolute_lyr_path }}">LYR</a>
+                                    {% endif %}
                                 </div>
                             </td>
                             <td>

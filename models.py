@@ -232,12 +232,32 @@ class ModelVersion(models.Model):
 
     # Return just the base name of the SLD file without any associated file path
     def sld_filename(self):
-        return path.basename(self.sld_file.name)
+        if self.sld_file:
+            return path.basename(self.sld_file.name)
 
     # Return just the base name of the LYR file without any associated file path
     def lyr_filename(self):
-        return path.basename(self.lyr_file.name)
-    
+        if self.lyr_file:
+            return path.basename(self.lyr_file.name)
+
+    # Return absolute URL for XSD file
+    def absolute_xsd_path(self):
+        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.xsd_file.url.lstrip('/'))
+
+    # Return absolute URL for XLS file
+    def absolute_xls_path(self):
+        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.xls_file.url.lstrip('/'))
+
+    # Return absolute URL for SLD file
+    def absolute_sld_path(self):
+        if self.sld_file:
+            return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.sld_file.url.lstrip('/'))
+
+    # Return absolute URL for LYR file
+    def absolute_lyr_path(self):
+        if self.lyr_file:
+            return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.lyr_file.url.lstrip('/'))
+
     # Return an HTML anchor tag for the XSD file
     def xsd_link(self):
         return '<a href="%s">%s</a>' % (self.absolute_xsd_path(), self.xsd_filename())
@@ -250,29 +270,15 @@ class ModelVersion(models.Model):
 
     # Return an HTML anchor tag for the SLD file
     def sld_link(self):
-        return '<a href="%s">%s</a>' % (self.absolute_sld_path(), self.sld_filename())
+        if self.sld_file:
+            return '<a href="%s">%s</a>' % (self.absolute_sld_path(), self.sld_filename())
     sld_link.allow_tags = True    # This lets the admin interface show the anchor
 
     # Return an HTML anchor tag for the XSD file
     def lyr_link(self):
-        return '<a href="%s">%s</a>' % (self.absolute_lyr_path(), self.lyr_filename())
+        if self.lyr_file:
+            return '<a href="%s">%s</a>' % (self.absolute_lyr_path(), self.lyr_filename())
     lyr_link.allow_tags = True    # This lets the admin interface show the anchor
-
-    # Return absolute URL for XSD file
-    def absolute_xsd_path(self):
-        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.xsd_file.url.lstrip('/'))
-            
-    # Return absolute URL for XLS file
-    def absolute_xls_path(self):
-        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.xls_file.url.lstrip('/'))
-
-    # Return absolute URL for SLD file
-    def absolute_sld_path(self):
-        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.sld_file.url.lstrip('/'))
-
-    # Return absolute URL for LYR file
-    def absolute_lyr_path(self):
-        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.lyr_file.url.lstrip('/'))
     
     # Return RegEx pattern for use in UriRegister module
     def regex_pattern(self):
