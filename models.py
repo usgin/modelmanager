@@ -185,6 +185,10 @@ class ContentModel(models.Model):
         }        
         return as_json
 
+    # Return the layer name that should be used for this model
+    def layer_name(self):
+        return self.latest_version().type_details().layername
+
 #--------------------------------------------------------------------------------------
 # This class represents a specific version of a particular content-model. 
 #     A one-to-many relationship exists between ContentModels and ModelVersions. 
@@ -199,6 +203,8 @@ class ModelVersion(models.Model):
     date_created = models.DateField(auto_now_add=True)
     xsd_file = models.FileField(upload_to=get_file_path)
     xls_file = models.FileField(upload_to=get_file_path)
+    sld_file = models.FileField(upload_to=get_file_path, blank=True)
+    lyr_file = models.FileField(upload_to=get_file_path, blank=True)
     sample_wfs_request = models.CharField(max_length=2000, blank=True)
     rewrite_rule = models.OneToOneField(RewriteRule, null=True, blank=True)
     
@@ -223,6 +229,14 @@ class ModelVersion(models.Model):
     # Return just the base name of the XLS file without any associated file path
     def xls_filename(self):
         return path.basename(self.xls_file.name)
+
+    # Return just the base name of the SLD file without any associated file path
+    def sld_filename(self):
+        return path.basename(self.sld_file.name)
+
+    # Return just the base name of the LYR file without any associated file path
+    def lyr_filename(self):
+        return path.basename(self.lyr_file.name)
     
     # Return an HTML anchor tag for the XSD file
     def xsd_link(self):
@@ -233,7 +247,17 @@ class ModelVersion(models.Model):
     def xls_link(self):
         return '<a href="%s">%s</a>' % (self.absolute_xls_path(), self.xls_filename())
     xls_link.allow_tags = True    # This lets the admin interface show the anchor
-    
+
+    # Return an HTML anchor tag for the SLD file
+    def sld_link(self):
+        return '<a href="%s">%s</a>' % (self.absolute_sld_path(), self.sld_filename())
+    sld_link.allow_tags = True    # This lets the admin interface show the anchor
+
+    # Return an HTML anchor tag for the XSD file
+    def lyr_link(self):
+        return '<a href="%s">%s</a>' % (self.absolute_lyr_path(), self.lyr_filename())
+    lyr_link.allow_tags = True    # This lets the admin interface show the anchor
+
     # Return absolute URL for XSD file
     def absolute_xsd_path(self):
         return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.xsd_file.url.lstrip('/'))
@@ -241,6 +265,14 @@ class ModelVersion(models.Model):
     # Return absolute URL for XLS file
     def absolute_xls_path(self):
         return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.xls_file.url.lstrip('/'))
+
+    # Return absolute URL for SLD file
+    def absolute_sld_path(self):
+        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.sld_file.url.lstrip('/'))
+
+    # Return absolute URL for LYR file
+    def absolute_lyr_path(self):
+        return '%s/%s' % (settings.BASE_URL.rstrip('/'), self.lyr_file.url.lstrip('/'))
     
     # Return RegEx pattern for use in UriRegister module
     def regex_pattern(self):
@@ -315,8 +347,12 @@ class ModelVersion(models.Model):
         class type_details(object):
             namespace = next(iter(schema.xpath("/xs:schema/@targetNamespace", namespaces=ns)), "")
             typename = next(iter(schema.xpath("/xs:schema/xs:element/@type", namespaces=ns)), "").replace("Type", "")
-            prefix = re.match("^(?P<prefix>.*):", typename).group("prefix")
-
+            try:
+                prefix = re.match("^(?P<prefix>.*):", typename).group("prefix")
+                layername = re.search(":(?P<base>.*)$", typename).group("base")
+            except:
+                prefix = ""
+                layername = ""
         return type_details()
 
 #--------------------------------------------------------------------------------------
