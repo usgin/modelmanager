@@ -83,6 +83,9 @@ class WfsCapabilities(WfsBase):
         # Make sure there's a ? after the base_url
         base_url = "%s?" % base_url.rstrip("?")
 
+        # Make sure that ?request=GetFeature doesn't get in twice
+        base_url = base_url.split("request=GetFeature")[0]
+
         # Build the GetFeature URL
         param_values = (base_url, self.version, feature_type_name)
         url = "%s&service=WFS&version=%s&request=GetFeature&typename=%s" % param_values
