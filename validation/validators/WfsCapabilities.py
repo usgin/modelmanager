@@ -58,18 +58,30 @@ class WfsCapabilities(WfsBase):
                 'ows': 'http://www.opengis.net/ows',
                 'xlink': 'http://www.w3.org/1999/xlink'
             }
-        
+
+        version_params = []
+
         # Read URLs for GetFeature operations from the GetCapabilities document
         if self.version == '1.0.0':
             base_url = parsed_doc.xpath(
                     '//wfs:Capability/wfs:Request/wfs:GetFeature/wfs:DCPType/wfs:HTTP/wfs:Get/@onlineResource',
                     namespaces=ns
                 )
+
         elif self.version in ['1.1.0', '2.0.0']:
             base_url = parsed_doc.xpath(
                     '//ows:OperationsMetadata/ows:Operation[@name="GetFeature"]/ows:DCP/ows:HTTP/ows:Get/@xlink:href',
                     namespaces=ns
                 )
+
+            # Geoserver + app schema bug in version 1.1.0 requests requires you to specify outputFormat
+            output_formats = parsed_doc.xpath(
+                '//ows:OperationsMetadata/ows:Operation[@name="GetFeature"]/ows:Parameter[@name="outputFormat"]/ows:Value',
+                namespaces=ns
+            )
+
+            if "gml32" in [format.text for format in output_formats]:
+                version_params.append("outputFormat=gml32")
         else:
             # There was some issue locating the GetFeature operation's description
             self.errors.append({"capabilitiesError": "Could not determine the GetFeature URL"})
@@ -89,8 +101,12 @@ class WfsCapabilities(WfsBase):
         # Build the GetFeature URL
         param_values = (base_url, self.version, feature_type_name)
         url = "%s&service=WFS&version=%s&request=GetFeature&typename=%s" % param_values
+
+        # Add any version-specific parameters
+        if len(version_params) > 0:
+            url += "&" + "&".join(version_params)
+
         if number_of_features == 99:
             return url
         else:
             return "%s&maxfeatures=%s" % (url, number_of_features)
-    
