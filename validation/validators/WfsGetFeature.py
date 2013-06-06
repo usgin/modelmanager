@@ -21,7 +21,9 @@ class WfsGetFeature(WfsBase):
         
         # Grab the namespace map
         ns = parsed_doc.getroot().nsmap
-        
+        if None in ns.keys():
+            del ns[None]
+
         # Gather elements of the requested FeatureType
         elements = parsed_doc.xpath("//%s" % self.feature_type, namespaces=ns)
         
