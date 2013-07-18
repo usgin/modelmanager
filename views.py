@@ -155,3 +155,9 @@ def swaggerui(request):
 def get_feature_catalog(request, id):
     v = get_object_or_404(ModelVersion, pk=id)
     return render(request, "featureCatalog.xml", {"version": v}, content_type="text/xml")
+
+#--------------------------------------------------------------------------------------
+# Tools page
+#--------------------------------------------------------------------------------------
+def tools(request):
+    return render(request, "tools.html", {})

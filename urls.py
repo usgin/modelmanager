@@ -18,6 +18,9 @@ urlpatterns = patterns('modelmanager.views',
                        # Model viewing page
                        url(r'^models/$', 'models'),
 
+                       # Tools page
+                       url(r'^tools/$', 'tools'),
+
                        # Swagger documentation
                        url(r'^docs/', 'swaggerui'),
                        url(r'^swagger/(?P<path>.*)', 'swagger')

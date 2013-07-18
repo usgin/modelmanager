@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block navhome %}{% endblock %}
+{% block navtools %}class="active"{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="span10 offset1">
+        <h1>Some Helpful Tools</h1>
+        <hr>
+        <section id="excel-to-ngds-featureclass">
+            <h3>Excel to NGDS FeatureClass</h3>
+            <div class="tool-description" style="margin-left:50px">
+                <p>This is a tool for ArcMap which validates and converts a spreadsheet in an Excel file to a valid NGDS FeatureClass. It has primarily been tested in ArcGIS 10.0 but does run in 10.1.</p>
+                <div class="btn-group">
+                    <a class="btn btn-primary" href="https://github.com/usgin/ExcelToNGDSServiceTool/archive/master.zip">Download the Package</a>
+                    <a class="btn" href="https://github.com/usgin/ExcelToNGDSServiceTool">View the Source Code</a>
+                    <a class="btn" href="https://docs.google.com/document/d/1H08dObu5pWze7g3sSap3uDcI4DwYzuIEMfcP0V7Xj9s/edit?usp=sharing">Read the Docs</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock %}
