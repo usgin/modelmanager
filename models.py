@@ -177,6 +177,7 @@ class ContentModel(models.Model):
         as_json = {
             'title': self.title,
             'uri': self.absolute_uri(),
+            'label': self.label,
             'description': self.description,
             'discussion': self.discussion,
             'status': self.status,
