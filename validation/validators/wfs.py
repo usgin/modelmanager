@@ -88,11 +88,12 @@ def validate_wfs_form(req):
                 modelversion = form.cleaned_data['version']
                 get_feature_validator = WfsGetFeature(form.capabilities, feature_type, number_of_features)
                 result = get_feature_validator.validate(modelversion)
-                
+
                 # Setup hash table for results rendering
                 context = {
                         "valid": result.valid,
                         "valid_elements": result.valid_count(),
+                        "invalid_elements": result.invalid_count(),
                         "url": get_feature_validator.url,
                         "errors": result.errors,
                         "modelversion": modelversion,

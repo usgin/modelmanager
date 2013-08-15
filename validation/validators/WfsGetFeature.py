@@ -49,19 +49,17 @@ class WfsGetFeature(WfsBase):
         # Retrieve the GetFeature document, parsed by lxml
         parsed_doc = self.fetch_parsed_doc()
         
-        
-    
+
 #--------------------------------------------------------------------------------------
 # Class to perform schema validation for each element in a wfs:FeatureCollection
 #--------------------------------------------------------------------------------------
 class ValidationResults():
-    results = []
-    errors = []
-    valid = True
-    
     # Constructor function requires a set of elements to validate and a schema
     #     to validate them against.
     def __init__(self, elements, schema):
+        self.results = []
+        self.errors = []
+        self.valid = True
         # Provide a count for the total number of elements validated
         self.number_of_elements = len(elements)
         
@@ -108,4 +106,4 @@ class ValidationResults():
         
     # Function to remove duplicate errors from the log
     def deduplicate_errors(self):
-        self.errors = list(set(self.errors))
+        self.errors = set([err.message for err in self.errors])

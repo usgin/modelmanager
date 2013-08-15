@@ -303,7 +303,7 @@ class ModelVersion(models.Model):
                     "validation", 
                     "schemas.opengis.net"
                 )
-                
+
                 if url == "http://schemas.opengis.net/gml/3.1.1/base/gml.xsd":
                     that = path.join(
                         schema_folder,

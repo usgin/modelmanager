@@ -17,7 +17,7 @@
   		{% for error in errors %}
   		<li>
   		  <span class="label label-important">Error</span>
-  		  <span class="text-error">{{ error.message }}</span>
+  		  <span class="text-error">{{ error }}</span>
   		</li>
   		{% endfor %}
   	</ul>
@@ -26,7 +26,8 @@
   	<p><i class="icon-chevron-right"></i>  Here is the <a href="{{ url }}">WFS Response that you validated.</a></p>
   	<p><i class="icon-chevron-right"></i>  Here is <a href="{{ modelversion.absolute_xsd_path }}">the schema document that was used to validate it.</a></p>
   	<p><i class="icon-chevron-right"></i>  That schema document represents version {{ modelversion.version }} of the <a href="/models/#{{ modelversion.content_model.label }}">{{ modelversion.content_model.title }} content model</a>.</p>
-  	<p class="text-{% if valid %}success{% else %}warning{% endif %}"><i class="icon-chevron-right"></i>  There were {{ valid_elements }} valid {{ feature_type }} elements in the response.</p>
+  	<p class="text-{% if valid_elements != 0 %}success{% else %}error{% endif %}"><i class="icon-chevron-right"></i>  There {% if valid_elements > 1 %}were{% else %}was{% endif %} {{ valid_elements }} valid {{ feature_type }} element{% if valid_elements > 1 %}s{% endif %} in the response.</p>
+    {% if not valid %}<p class="text-error"><i class="icon-chevron-right"></i>  There {% if invalid_elements > 1 %}were{% else %}was{% endif %} {{ invalid_elements }} invalid {{ feature_type }} element{% if invalid_elements > 1 %}s{% endif %} in the response.</p>{% endif %}
   </div>
 </div>
 {% endblock %}
