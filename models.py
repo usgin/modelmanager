@@ -296,10 +296,36 @@ class ModelVersion(models.Model):
     
     # Return an lxml.etree.XMLSchema validator
     def schema_validator(self):
+        class SchemaResolver(etree.Resolver):
+            def resolve(self, url, id, context):
+                schema_folder = path.join(
+                    path.dirname(__file__), 
+                    "validation", 
+                    "schemas.opengis.net"
+                )
+                
+                if url == "http://schemas.opengis.net/gml/3.1.1/base/gml.xsd":
+                    that = path.join(
+                        schema_folder,
+                        "gml",
+                        "3.1.1",
+                        "base",
+                        "gml.xsd"
+                    )
+                    return self.resolve_filename(that, context)
+                else:    
+                    return self.resolve_filename(url, context)
+        
+        parser = etree.XMLParser()
+        parser.resolvers.add(SchemaResolver())
+        
         # I don't know why this isn't working: schema_file = self.xsd_file.open()
         schema_file = open(self.xsd_file.path, 'r')
-        schema_doc = etree.parse(schema_file)
-        schema = etree.XMLSchema(schema_doc)
+        schema_doc = etree.parse(schema_file, parser)
+        try:
+            schema = etree.XMLSchema(schema_doc)
+        except etree.XMLSchemaParseError, err:
+            print err
         return schema
     
     # Return the instance as a dictionary that can be easily converted to JSON.
