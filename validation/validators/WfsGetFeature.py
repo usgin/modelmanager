@@ -91,7 +91,13 @@ class ValidationResults():
                 })
                 
             # Grab the error log from the etree.XMLSchema object
-            self.errors = schema.error_log
+            def replacements(error):
+                message = error.message
+                for prefix, url in element.nsmap.items():
+                    message = message.replace("{%s}" % url, "%s:" % prefix)
+                return message
+
+            self.errors = map(replacements, schema.error_log)
             
             # De-duplicate the error log
             self.deduplicate_errors()
@@ -106,4 +112,4 @@ class ValidationResults():
         
     # Function to remove duplicate errors from the log
     def deduplicate_errors(self):
-        self.errors = set([err.message for err in self.errors])
+        self.errors = set(self.errors)
