@@ -27,7 +27,29 @@
   	<p><i class="icon-chevron-right"></i>  Here is <a href="{{ modelversion.absolute_xsd_path }}">the schema document that was used to validate it.</a></p>
   	<p><i class="icon-chevron-right"></i>  That schema document represents version {{ modelversion.version }} of the <a href="/models/#{{ modelversion.content_model.label }}">{{ modelversion.content_model.title }} content model</a>.</p>
   	<p class="text-{% if valid_elements != 0 %}success{% else %}error{% endif %}"><i class="icon-chevron-right"></i>  There {% if valid_elements > 1 %}were{% else %}was{% endif %} {{ valid_elements }} valid {{ feature_type }} element{% if valid_elements > 1 %}s{% endif %} in the response.</p>
-    {% if not valid %}<p class="text-error"><i class="icon-chevron-right"></i>  There {% if invalid_elements > 1 %}were{% else %}was{% endif %} {{ invalid_elements }} invalid {{ feature_type }} element{% if invalid_elements > 1 %}s{% endif %} in the response.</p>{% endif %}
+    {% if not valid %}
+    <p class="text-error"><i class="icon-chevron-right"></i>  There {% if invalid_elements > 1 %}were{% else %}was{% endif %} {{ invalid_elements }} invalid {{ feature_type }} element{% if invalid_elements > 1 %}s{% endif %} in the response.</p>
+    <div class="accordion" id="error-accordion">
+        {% for bad in invalid_results %}
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#error-accordion" href="#error-{{ forloop.counter }}">
+                    Bad Record # {{ forloop.counter }}
+                </a>
+            </div>
+            <div id="error-{{ forloop.counter }}" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <pre class="prettyprint">{{ bad }}</pre>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
   </div>
 </div>
+{% endblock %}
+
+{%  block scripts %}
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 {% endblock %}

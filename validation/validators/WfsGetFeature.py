@@ -60,6 +60,8 @@ class ValidationResults():
         self.results = []
         self.errors = []
         self.valid = True
+        self.bad_elements = []
+
         # Provide a count for the total number of elements validated
         self.number_of_elements = len(elements)
         
@@ -90,7 +92,7 @@ class ValidationResults():
                     "element": element                                     
                 })
                 
-            # Grab the error log from the etree.XMLSchema object
+            # Grab any errors from the etree.XMLSchema object
             def replacements(error):
                 message = error.message
                 for prefix, url in element.nsmap.items():
@@ -98,9 +100,9 @@ class ValidationResults():
                 return message
 
             self.errors = map(replacements, schema.error_log)
-            
-            # De-duplicate the error log
-            self.deduplicate_errors()
+
+        # De-duplicate the error log
+        self.deduplicate_errors()
             
     # Function to count the number of valid elements
     def valid_count(self):
@@ -109,7 +111,11 @@ class ValidationResults():
     # Function to count the number of invalid elements
     def invalid_count(self):
         return len([ result for result in self.results if not result['valid'] ])
-        
+
+    # Function to return the invalid elements
+    def invalid_elements(self):
+        return filter(lambda result: not result['valid'], self.results)
+
     # Function to remove duplicate errors from the log
     def deduplicate_errors(self):
         self.errors = set(self.errors)

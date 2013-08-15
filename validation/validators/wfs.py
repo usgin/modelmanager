@@ -4,6 +4,7 @@ from WfsGetFeature import WfsGetFeature
 from django import forms
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import render
+from lxml import etree
 
 #--------------------------------------------------------------------------------------
 # A Form to gather user's input: Just the WFS URL
@@ -99,7 +100,8 @@ def validate_wfs_form(req):
                         "modelversion": modelversion,
                         "feature_type": feature_type,
                         "number_of_features": "a lot of" if number_of_features == 99 else number_of_features,
-                        "wfs_base_url": get_feature_validator.url.split('?')[0]
+                        "wfs_base_url": get_feature_validator.url.split('?')[0],
+                        "invalid_results": [etree.tostring(bad["element"], pretty_print=True) for bad in result.invalid_elements()]
                     }
                 
                 # Render the results as HTML
