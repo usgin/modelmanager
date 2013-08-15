@@ -1,4 +1,5 @@
 from WfsBase import WfsBase
+from lxml.etree import XPathEvalError
 
 #--------------------------------------------------------------------------------------
 # A class representing a WFS GetFeature document.
@@ -25,7 +26,18 @@ class WfsGetFeature(WfsBase):
             del ns[None]
 
         # Gather elements of the requested FeatureType
-        elements = parsed_doc.xpath("//%s" % self.feature_type, namespaces=ns)
+        try:
+            elements = parsed_doc.xpath("//%s" % self.feature_type, namespaces=ns)
+        except XPathEvalError, err:
+            class FailedResult(object):
+                def __init__(self, message):
+                    self.errors = [{"message": message}]
+                    self.valid = False
+                
+                def valid_count(self):
+                    return 0
+                
+            return FailedResult("%s: Looked for //%s -- %s" % (err.message, self.feature_type, ns))
         
         # Retrieve the XMLSchema object responsible for validating this ModelVersion's schema
         schema = modelversion.schema_validator()

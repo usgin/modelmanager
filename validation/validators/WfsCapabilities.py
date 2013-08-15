@@ -80,8 +80,9 @@ class WfsCapabilities(WfsBase):
                 namespaces=ns
             )
 
-            if "gml32" in [format.text for format in output_formats]:
-                version_params.append("outputFormat=gml32")
+            # All our schemas are actually GML 3.1.1 features. 3.2.1 requests should not be valid.
+            #if "gml32" in [format.text for format in output_formats]:
+            #    version_params.append("outputFormat=gml32")
         else:
             # There was some issue locating the GetFeature operation's description
             self.errors.append({"capabilitiesError": "Could not determine the GetFeature URL"})
