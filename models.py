@@ -6,6 +6,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from uriconfigure import adjust_rewrite_rule, delete_rewrite_rule, update_related_rewrite_rules, RewriteRule
 from os import path
 from lxml import etree
+from overwriter import Overwriter
 import re
 
 #--------------------------------------------------------------------------------------
@@ -202,10 +203,10 @@ class ModelVersion(models.Model):
     content_model = models.ForeignKey('ContentModel')
     version = models.CharField(max_length=10)
     date_created = models.DateField(auto_now_add=True)
-    xsd_file = models.FileField(upload_to=get_file_path)
-    xls_file = models.FileField(upload_to=get_file_path)
-    sld_file = models.FileField(upload_to=get_file_path, blank=True)
-    lyr_file = models.FileField(upload_to=get_file_path, blank=True)
+    xsd_file = models.FileField(upload_to=get_file_path, storage=Overwriter())
+    xls_file = models.FileField(upload_to=get_file_path, storage=Overwriter())
+    sld_file = models.FileField(upload_to=get_file_path, storage=Overwriter(), blank=True)
+    lyr_file = models.FileField(upload_to=get_file_path, storage=Overwriter(), blank=True)
     sample_wfs_request = models.CharField(max_length=2000, blank=True)
     rewrite_rule = models.OneToOneField(RewriteRule, null=True, blank=True)
     
