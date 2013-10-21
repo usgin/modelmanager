@@ -338,6 +338,7 @@ class ModelVersion(models.Model):
             'date_created': self.date_created.isoformat(),
             'xsd_file_path': self.absolute_xsd_path(),
             'xls_file_path': self.absolute_xls_path(),
+            'sld_file_path': self.absolute_sld_path(),
             'sample_wfs_request': self.sample_wfs_request,
             'field_info': self.field_info()
         }        
