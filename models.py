@@ -8,6 +8,7 @@ from os import path
 from lxml import etree
 from overwriter import Overwriter
 import re
+from collections import OrderedDict
 
 #--------------------------------------------------------------------------------------
 # Function that gets the path for a uploaded files.
@@ -361,15 +362,53 @@ class ModelVersion(models.Model):
             "xs": "http://www.w3.org/2001/XMLSchema"
         }
 
-        return [
-            {
+#        return [
+#            {
+#                "name": element.get("name"),
+#                "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
+#                "optional": True if element.get("minOccurs", "1") == "0" else False,
+#                "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
+#            }
+#            for element in schema.xpath("//xs:sequence/xs:element", namespaces=ns)
+#        ]
+
+        # Create a dictionary of the layer names in a schema
+        # The layer name is the key and layer type is the value
+        layer_names = OrderedDict()       
+        for element in schema.xpath("//xs:element", namespaces=ns):
+            layer_type = str(element.get("type"))
+            if layer_type.startswith("aasg:"):
+                layer_names[element.get("name")] = layer_type.replace("aasg:", "")
+
+        layer_info_dict = OrderedDict()
+        field_info = []
+        
+        # Get the field info for the common fields in a multi-layer schema (identified by SampleAnalysisCommonType)
+        # And add it to a dictionary of all layers and associated field info
+        for element in schema.xpath("//xs:complexType[@name=\"SampleAnalysisCommonType\"]/xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
+            field_info.append({
                 "name": element.get("name"),
                 "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
                 "optional": True if element.get("minOccurs", "1") == "0" else False,
                 "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
-            }
-            for element in schema.xpath("//xs:sequence/xs:element", namespaces=ns)
-        ]
+            })
+        if field_info:
+            layer_info_dict["SampleAnalysisCommon"] = field_info
+
+        # Add each layer and its field info to the dictionary of all layers and associated field info
+        for layer in layer_names:
+            for ele in schema.xpath("//xs:complexType[@name=\""+ layer_names[layer] + "\"]", namespaces=ns):
+                field_info = []
+                for element in ele.xpath("xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
+                    field_info.append({
+                        "name": element.get("name"),
+                        "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
+                        "optional": True if element.get("minOccurs", "1") == "0" else False,
+                        "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
+                    })
+                layer_info_dict[layer] = field_info
+
+        return layer_info_dict
 
     # Parse a schema document to determine the target namespace and type
     def type_details(self):
