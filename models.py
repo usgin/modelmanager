@@ -362,23 +362,12 @@ class ModelVersion(models.Model):
             "xs": "http://www.w3.org/2001/XMLSchema"
         }
 
-#        return [
-#            {
-#                "name": element.get("name"),
-#                "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
-#                "optional": True if element.get("minOccurs", "1") == "0" else False,
-#                "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
-#            }
-#            for element in schema.xpath("//xs:sequence/xs:element", namespaces=ns)
-#        ]
-
         # Create a dictionary of the layer names in a schema
         # The layer name is the key and layer type is the value
         layer_names = OrderedDict()       
         for element in schema.xpath("//xs:element", namespaces=ns):
             layer_type = str(element.get("type"))
-            if layer_type.startswith("aasg:"):
-                layer_names[element.get("name")] = layer_type.replace("aasg:", "")
+            layer_names[element.get("name")] = re.sub(r'^.*\:', '', layer_type)
 
         layer_info_dict = OrderedDict()
         field_info = []
