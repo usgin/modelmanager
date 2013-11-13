@@ -364,31 +364,32 @@ class ModelVersion(models.Model):
 
         # Create a dictionary of the layer names in a schema
         # The layer name is the key and layer type is the value
-        layer_names = OrderedDict()       
-        for element in schema.xpath("//xs:element", namespaces=ns):
+        layer_names = OrderedDict()
+        for element in schema.xpath("//xs:schema/xs:element", namespaces=ns):
             layer_type = str(element.get("type"))
             layer_names[element.get("name")] = re.sub(r'^.*\:', '', layer_type)
 
         layer_info_dict = OrderedDict()
-        field_info = []
-        
-        # Get the field info for the common fields in a multi-layer schema (identified by SampleAnalysisCommonType)
-        # And add it to a dictionary of all layers and associated field info
-        for element in schema.xpath("//xs:complexType[@name=\"SampleAnalysisCommonType\"]/xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
-            field_info.append({
-                "name": element.get("name"),
-                "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
-                "optional": True if element.get("minOccurs", "1") == "0" else False,
-                "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
-            })
-        if field_info:
-            layer_info_dict["SampleAnalysisCommon"] = field_info
 
         # Add each layer and its field info to the dictionary of all layers and associated field info
         for layer in layer_names:
-            for ele in schema.xpath("//xs:complexType[@name=\""+ layer_names[layer] + "\"]", namespaces=ns):
+            for lyr in schema.xpath("//xs:complexType[@name=\""+ layer_names[layer] + "\"]", namespaces=ns):
                 field_info = []
-                for element in ele.xpath("xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
+
+                # For each layer, get its base type and if there is another layer whose name matches the base
+                # type (as is the case when there are common fields which are not listed with each layer but
+                # instead listed separately) append those fields to the beginning of the field list for the layer
+                common_base = re.sub("^.*\:", "", lyr.xpath("xs:complexContent/xs:extension", namespaces=ns)[0].get("base"))
+                for element in schema.xpath("//xs:complexType[@name=\"" + common_base + "\"]/xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
+                    field_info.append({
+                        "name": element.get("name"),
+                        "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
+                        "optional": True if element.get("minOccurs", "1") == "0" else False,
+                        "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
+                    })
+
+                # For each layer get the fields that are listed explicitly with the layer
+                for element in lyr.xpath("xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
                     field_info.append({
                         "name": element.get("name"),
                         "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
