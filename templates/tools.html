@@ -9,9 +9,9 @@
         <h1>Some Helpful Tools</h1>
         <hr>
         <section id="excel-to-ngds-featureclass">
-            <h3>Excel to NGDS FeatureClass</h3>
+            <h3>Excel to NGDS Service ArcGIS Tool</h3>
             <div class="tool-description" style="margin-left:50px">
-                <p>This is a tool for ArcMap which validates and converts a spreadsheet in an Excel file to a valid NGDS FeatureClass. It has primarily been tested in ArcGIS 10.0 but does run in 10.1.</p>
+                <p>This is a tool for ArcMap 10, 10.1 and 10.2 which validates and converts a spreadsheet in an Excel content model to a geodatabase ready to be deployed as a NGDS Service.</p>
                 <div class="btn-group">
                     <a class="btn btn-primary" href="https://github.com/usgin/ExcelToNGDSServiceTool/archive/master.zip">Download the Package</a>
                     <a class="btn" href="https://github.com/usgin/ExcelToNGDSServiceTool">View the Source Code</a>
@@ -21,13 +21,24 @@
         </section>
         
         <section id="excel-to-las">
-            <h3>Excel to LAS Converter</h3>
+            <h3>Well Log Data Tools</h3>
             <div class="tool-description" style="margin-left:50px">
-                <p>This is an executable python script that can convert data from a template Excel file into a <a href="http://cwls.org/docs/las_20_updated_july2009">LAS version 2.0 formatted XML file</a>. An example template file can be found in the package after download.</p>
+                <p>This is an executable python script which offers two different conversions for well log data: 1) Conversion from a <a href="https://github.com/usgin-models/BoreholeLASLogData">BoreholeLASLogData.xls</a> model to a <a href="http://cwls.org/docs/las_20_updated_july2009">LAS version 2.0 formatted XML file</a>.  2) Conversion from a <a href="http://cwls.org/docs/las_20_updated_july2009">LAS 2.0 formatted XML file</a> to an entry in the <a href="http://schemas.usgin.org/models/#welllog">WellLog Content Model<a></a>. Example templates for BoreholeLASLogData.xls and WellLogsTemplate.xls can be found in the package after download.</p>
                 <div class="btn-group">
                     <a class="btn btn-primary" href="https://github.com/usgin/WellLogDataTools/archive/master.zip">Download the Package</a>
                     <a class="btn" href="https://github.com/usgin/WellLogDataTools">View the Source Code</a>
                     <a class="btn" href="https://github.com/usgin/WellLogDataTools/blob/master/Readme.md">Read the Docs</a>
+                </div>
+            </div>
+        </section>
+        <section id="auto-publisher">
+            <h3>Auto Publisher</h3>
+            <div class="tool-description" style="margin-left:50px">
+                <p>This is an executable program for ArcGIS 10.1 and 10.2 that publishes services from finished ArcMap projects. It can publish a single file or folder of files. Service properties are filled according to the user's saved preferences. The full list of capabilities can be found in the ReadMe.</p>
+                <div class="btn-group">
+                    <a class="btn btn-primary" href="https://github.com/Thom-OMalley/AutoPublisher/archive/master.zip">Download the Package</a>
+                    <a class="btn" href="https://github.com/Thom-OMalley/AutoPublisher">View the Source Code</a>
+                    <a class="btn" href="https://github.com/Thom-OMalley/AutoPublisher/blob/master/readme.txt">Read the Docs</a>
                 </div>
             </div>
         </section>
