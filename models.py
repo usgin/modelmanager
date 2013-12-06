@@ -342,7 +342,7 @@ class ModelVersion(models.Model):
             'sld_file_path': self.absolute_sld_path(),
             'sample_wfs_request': self.sample_wfs_request,
             'field_info': self.field_info()
-        }        
+        }
         return as_json
 
     # Parse a schema document to find details about fields
@@ -369,7 +369,9 @@ class ModelVersion(models.Model):
             layer_type = str(element.get("type"))
             layer_names[element.get("name")] = re.sub(r'^.*\:', '', layer_type)
 
-        layer_info_dict = OrderedDict()
+        layers_fields = OrderedDict()
+        common_fields = []
+        found_common_fields = False
 
         # Add each layer and its field info to the dictionary of all layers and associated field info
         for layer in layer_names:
@@ -388,6 +390,10 @@ class ModelVersion(models.Model):
                         "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
                     })
 
+                if found_common_fields == False:
+                    common_fields = field_info[:]
+                    found_common_fields = True
+
                 # For each layer get the fields that are listed explicitly with the layer
                 for element in lyr.xpath("xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
                     field_info.append({
@@ -396,9 +402,14 @@ class ModelVersion(models.Model):
                         "optional": True if element.get("minOccurs", "1") == "0" else False,
                         "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
                     })
-                layer_info_dict[layer] = field_info
+                layers_fields[layer] = field_info
 
-        return layer_info_dict
+        layers_info = {}
+        layers_info["layers"] = layers_fields
+        layers_info["layers_order"] = [k for k, v in layer_names.items()]
+        layers_info["common_fields"] = common_fields
+
+        return layers_info
 
     # Parse a schema document to determine the target namespace and type
     def type_details(self):
