@@ -72,7 +72,9 @@
     <gfc:featureType>
         <gfc:FC_FeatureType id="{{ version.content_model.label }}-v-{{ version.version }}">
             <gfc:typeName>
-                <gco:LocalName>{{ version.type_details.typename }}</gco:LocalName>
+                {% for layer_name in version.field_info.iterkeys %}
+                <gco:LocalName>{{ layer_name }}</gco:LocalName>
+                {%  endfor %}
             </gfc:typeName>
             <gfc:definition>
                 <gco:CharacterString><![CDATA[{{ version.content_model.cleaned_description }}]]></gco:CharacterString>

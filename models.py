@@ -413,10 +413,8 @@ class ModelVersion(models.Model):
             typename = next(iter(schema.xpath("/xs:schema/xs:element/@type", namespaces=ns)), "").replace("Type", "")
             try:
                 prefix = re.match("^(?P<prefix>.*):", typename).group("prefix")
-                layername = re.search(":(?P<base>.*)$", typename).group("base")
             except:
                 prefix = ""
-                layername = ""
         return type_details()
 
 #--------------------------------------------------------------------------------------
