@@ -42,7 +42,7 @@
                             <dd>
                                 <div id="field-table-{{ cm.label }}" class="collapse">
                                 	<p></p><em class="text-warning">-- fields in yellow are required --</em></p>
-                                	{% for layer_name, all_fields_info in cm.latest_version.field_info.iteritems %}
+                                	{% for layer_name, all_fields_info in cm.latest_version.layers_info.iteritems %}
                                     <strong>Layer Name: </strong><span>{{ layer_name }}</span>
                                     <table class="table table-hover">
                                         <thead>

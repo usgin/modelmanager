@@ -341,12 +341,12 @@ class ModelVersion(models.Model):
             'xls_file_path': self.absolute_xls_path(),
             'sld_file_path': self.absolute_sld_path(),
             'sample_wfs_request': self.sample_wfs_request,
-            'field_info': self.field_info()
+            'layers_info': self.layers_info()
         }
         return as_json
 
     # Parse a schema document to find details about fields
-    def field_info(self):
+    def layers_info(self):
         schema_file = open(self.xsd_file.path, 'r')
         schema = etree.parse(schema_file)
         ns = {
