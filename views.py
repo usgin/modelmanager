@@ -5,6 +5,20 @@ from datetime import datetime, date
 import json
 
 #--------------------------------------------------------------------------------------
+# Query by label
+#--------------------------------------------------------------------------------------
+
+def model_by_label(content_model, model_version=None):
+    if model_version is not None:
+        cm = ContentModel.objects.values('id', 'label')
+        mv = ModelVersion.objects.values('id', 'content_model_id', 'version')
+        this_cm = [x for x in cm if x['label'] == content_model]
+        return [x for x in mv if x['content_model_id'] == this_cm[0]['id'] and x['version'] == model_version]
+    else:
+        cm = ContentModel.objects.values('id', 'label')
+        return [x for x in cm if x['label'] == content_model]
+
+#--------------------------------------------------------------------------------------
 # Expose all the available ContentModels
 #--------------------------------------------------------------------------------------
 def get_all_models(request, extension):
@@ -14,21 +28,12 @@ def get_all_models(request, extension):
 #--------------------------------------------------------------------------------------
 # Expose a single ContentModel
 #--------------------------------------------------------------------------------------
-def get_model(request, id, extension):
-    contentmodels = ContentModel.objects.filter(pk=id)
+def get_model(request, content_model, extension):
+    query = model_by_label(content_model)
+    model_version_pk = query[0]['id']
+    contentmodels = ContentModel.objects.filter(pk=model_version_pk)
     if not contentmodels: raise Http404
     return view_models(contentmodels, extension)
-
-#--------------------------------------------------------------------------------------
-# Query by label
-#--------------------------------------------------------------------------------------
-
-def model_by_label(content_model, model_version):
-    cm = ContentModel.objects.values('id', 'label')
-    mv = ModelVersion.objects.values('id', 'content_model_id', 'version')
-    this_cm = [x for x in cm if x['label'] == content_model]
-    this_version = [x for x in mv if x['content_model_id'] == this_cm[0]['id'] and x['version'] == model_version]
-    return this_version
 
 #--------------------------------------------------------------------------------------
 # Choose the appropriate format to expose based on the requested extension
@@ -165,8 +170,8 @@ def swaggerui(request):
 #--------------------------------------------------------------------------------------
 def get_feature_catalog(request, content_model, model_version):
     query = model_by_label(content_model, model_version)
-    model_version_id = query[0]['id']
-    v = get_object_or_404(ModelVersion, pk=model_version_id)
+    model_version_pk = query[0]['id']
+    v = get_object_or_404(ModelVersion, pk=model_version_pk)
     return render(request, "featureCatalog.xml", {"version": v}, content_type="text/xml")
 
 #--------------------------------------------------------------------------------------

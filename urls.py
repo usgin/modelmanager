@@ -7,7 +7,7 @@ urlpatterns = patterns('modelmanager.views',
                        url(r'^contentmodels\.(?P<extension>json|html|xml|drupal)$', 'get_all_models'),
 
                        # Get a single ContentModel as JSON or HTML
-                       url(r'^contentmodel/(?P<id>\d*)\.(?P<extension>json|html|xml|drupal)$', 'get_model'),
+                       url(r'^contentmodel/(?P<content_model>.*)\.(?P<extension>json|html|xml|drupal)$', 'get_model'),
 
                        # Get a FeatureCatalogue for a particular ModelVersion
                        url(r'^featurecatalog/(?P<content_model>.*)/(?P<model_version>.*)\.xml', 'get_feature_catalog'),
