@@ -210,7 +210,7 @@ class ModelVersion(models.Model):
     lyr_file = models.FileField(upload_to=get_file_path, storage=Overwriter(), blank=True)
     sample_wfs_request = models.CharField(max_length=2000, blank=True)
     rewrite_rule = models.OneToOneField(RewriteRule, null=True, blank=True)
-    
+
     # Return the first-decimal, or "Major" version number. In the case of version 1.23 this would be 1.2
     def major_version(self):
         m = re.match('\d*\.\d{1}', self.version)

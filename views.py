@@ -20,6 +20,17 @@ def get_model(request, id, extension):
     return view_models(contentmodels, extension)
 
 #--------------------------------------------------------------------------------------
+# Query by label
+#--------------------------------------------------------------------------------------
+
+def model_by_label(content_model, model_version):
+    cm = ContentModel.objects.values('id', 'label')
+    mv = ModelVersion.objects.values('id', 'content_model_id', 'version')
+    this_cm = [x for x in cm if x['label'] == content_model]
+    this_version = [x for x in mv if x['content_model_id'] == this_cm[0]['id'] and x['version'] == model_version]
+    return this_version
+
+#--------------------------------------------------------------------------------------
 # Choose the appropriate format to expose based on the requested extension
 #--------------------------------------------------------------------------------------
 def view_models(contentmodels, extension):
@@ -152,8 +163,10 @@ def swaggerui(request):
 #--------------------------------------------------------------------------------------
 # FeatureCatalogues
 #--------------------------------------------------------------------------------------
-def get_feature_catalog(request, id):
-    v = get_object_or_404(ModelVersion, pk=id)
+def get_feature_catalog(request, content_model, model_version):
+    query = model_by_label(content_model, model_version)
+    model_version_id = query[0]['id']
+    v = get_object_or_404(ModelVersion, pk=model_version_id)
     return render(request, "featureCatalog.xml", {"version": v}, content_type="text/xml")
 
 #--------------------------------------------------------------------------------------

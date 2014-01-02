@@ -10,7 +10,7 @@ urlpatterns = patterns('modelmanager.views',
                        url(r'^contentmodel/(?P<id>\d*)\.(?P<extension>json|html|xml|drupal)$', 'get_model'),
 
                        # Get a FeatureCatalogue for a particular ModelVersion
-                       url(r'^featurecatalog/(?P<id>\d*)\.xml', 'get_feature_catalog'),
+                       url(r'^featurecatalog/(?P<content_model>.*)/(?P<model_version>.*)\.xml', 'get_feature_catalog'),
 
                        # Homepage
                        url(r'^home/$', 'homepage'),
