@@ -8,6 +8,7 @@ from os import path
 from lxml import etree
 from overwriter import Overwriter
 import re
+from collections import OrderedDict
 
 #--------------------------------------------------------------------------------------
 # Function that gets the path for a uploaded files.
@@ -209,7 +210,7 @@ class ModelVersion(models.Model):
     lyr_file = models.FileField(upload_to=get_file_path, storage=Overwriter(), blank=True)
     sample_wfs_request = models.CharField(max_length=2000, blank=True)
     rewrite_rule = models.OneToOneField(RewriteRule, null=True, blank=True)
-    
+
     # Return the first-decimal, or "Major" version number. In the case of version 1.23 this would be 1.2
     def major_version(self):
         m = re.match('\d*\.\d{1}', self.version)
@@ -340,12 +341,12 @@ class ModelVersion(models.Model):
             'xls_file_path': self.absolute_xls_path(),
             'sld_file_path': self.absolute_sld_path(),
             'sample_wfs_request': self.sample_wfs_request,
-            'field_info': self.field_info()
-        }        
+            'layers_info': self.layers_info()
+        }
         return as_json
 
     # Parse a schema document to find details about fields
-    def field_info(self):
+    def layers_info(self):
         schema_file = open(self.xsd_file.path, 'r')
         schema = etree.parse(schema_file)
         ns = {
@@ -361,15 +362,43 @@ class ModelVersion(models.Model):
             "xs": "http://www.w3.org/2001/XMLSchema"
         }
 
-        return [
-            {
-                "name": element.get("name"),
-                "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
-                "optional": True if element.get("minOccurs", "1") == "0" else False,
-                "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
-            }
-            for element in schema.xpath("//xs:sequence/xs:element", namespaces=ns)
-        ]
+        # Create a dictionary of the layer names in a schema
+        # The layer name is the key and layer type is the value
+        layer_names = OrderedDict()
+        for element in schema.xpath("//xs:schema/xs:element", namespaces=ns):
+            layer_type = str(element.get("type"))
+            layer_names[element.get("name")] = re.sub(r'^.*\:', '', layer_type)
+
+        layers_fields = OrderedDict()
+
+        # Add each layer and its field info to the dictionary of all layers and associated field info
+        for layer in layer_names:
+            for lyr in schema.xpath("//xs:complexType[@name=\""+ layer_names[layer] + "\"]", namespaces=ns):
+                field_info = []
+
+                # For each layer, get its base type and if there is another layer whose name matches the base
+                # type (as is the case when there are common fields which are not listed with each layer but
+                # instead listed separately) append those fields to the beginning of the field list for the layer
+                common_base = re.sub("^.*\:", "", lyr.xpath("xs:complexContent/xs:extension", namespaces=ns)[0].get("base"))
+                for element in schema.xpath("//xs:complexType[@name=\"" + common_base + "\"]/xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
+                    field_info.append({
+                        "name": element.get("name"),
+                        "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
+                        "optional": True if element.get("minOccurs", "1") == "0" else False,
+                        "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
+                    })
+
+                # For each layer get the fields that are listed explicitly with the layer
+                for element in lyr.xpath("xs:complexContent/xs:extension/xs:sequence/xs:element", namespaces=ns):
+                    field_info.append({
+                        "name": element.get("name"),
+                        "type": re.sub("^.*\:", "", element.get("type", next(iter(element.xpath("xs:simpleType/xs:restriction/@base", namespaces=ns)), ""))),
+                        "optional": True if element.get("minOccurs", "1") == "0" else False,
+                        "description": getattr(next(iter(element.xpath("xs:annotation/xs:documentation", namespaces=ns)), object()), "text", None)
+                    })
+                layers_fields[layer] = field_info
+
+        return layers_fields
 
     # Parse a schema document to determine the target namespace and type
     def type_details(self):
@@ -384,10 +413,8 @@ class ModelVersion(models.Model):
             typename = next(iter(schema.xpath("/xs:schema/xs:element/@type", namespaces=ns)), "").replace("Type", "")
             try:
                 prefix = re.match("^(?P<prefix>.*):", typename).group("prefix")
-                layername = re.search(":(?P<base>.*)$", typename).group("base")
             except:
                 prefix = ""
-                layername = ""
         return type_details()
 
 #--------------------------------------------------------------------------------------

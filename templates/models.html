@@ -38,12 +38,12 @@
                             <dt class="field-opener"><span
                                     class="pull-right label label-success">Version {{ cm.latest_version_number }}</span>
                                 <span class="icon-chevron-right"></span> <a data-toggle="collapse"
-                                                                            href="#field-table-{{ cm.label }}">Field
-                                    List</a></dt>
+                                                                            href="#field-table-{{ cm.label }}">Field List</a></dt>
                             <dd>
                                 <div id="field-table-{{ cm.label }}" class="collapse">
-                                    <strong>Layer Name: </strong><span>{{ cm.layer_name }}</span>
-                                    <p></p><em class="text-warning">-- fields in yellow are required --</em></p>
+                                	<p></p><em class="text-warning">-- fields in yellow are required --</em></p>
+                                	{% for layer_name, all_fields_info in cm.latest_version.layers_info.iteritems %}
+                                    <strong>Layer Name: </strong><span>{{ layer_name }}</span>
                                     <table class="table table-hover">
                                         <thead>
                                         <tr>
@@ -52,17 +52,18 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for ele in cm.latest_version.field_info %}
-                                            <tr {% if not ele.optional %}class="warning"{% endif %}>
-                                                <td>{{ ele.name }} ({{ ele.type }})</td>
-                                                <td>{{ ele.description }}</td>
+                                        	{% for field_info in all_fields_info %}
+                                            <tr {% if not field_info.optional %}class="warning"{% endif %}>
+                                                <td>{{ field_info.name }} ({{ field_info.type }})</td>
+                                                <td>{{ field_info.description }}</td>
                                             </tr>
-                                        {% endfor %}
+                                            {% endfor %}
                                         </tbody>
                                     </table>
                                     <a class="pull-right" data-toggle="collapse" href="#field-table-{{ cm.label }}"><span
                                             class="icon-chevron-up"></span>Collapse Field
                                         List</a>
+                                   {% endfor %}
                                 </div>
                             </dd>
                         </div>

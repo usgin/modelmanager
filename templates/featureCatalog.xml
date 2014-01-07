@@ -69,10 +69,11 @@
             </gmd:role>
         </gmd:CI_ResponsibleParty>
     </gfc:producer>
+    {% for layer_name, all_fields_info in version.layers_info.iteritems %}
     <gfc:featureType>
         <gfc:FC_FeatureType id="{{ version.content_model.label }}-v-{{ version.version }}">
             <gfc:typeName>
-                <gco:LocalName>{{ version.type_details.typename }}</gco:LocalName>
+                <gco:LocalName>{{ layer_name }}</gco:LocalName>
             </gfc:typeName>
             <gfc:definition>
                 <gco:CharacterString><![CDATA[{{ version.content_model.cleaned_description }}]]></gco:CharacterString>
@@ -84,7 +85,7 @@
                 <gco:Boolean>false</gco:Boolean>
             </gfc:isAbstract>
             <gfc:featureCatalogue nilReason="missing"/>
-            {% for field in version.field_info %}
+                {% for field in all_fields_info %}
                 <gfc:carrierOfCharacteristics>
                     <gfc:FC_FeatureAttribute>
                         <gfc:memberName>
@@ -149,7 +150,8 @@
                         </valueType>
                     </gfc:FC_FeatureAttribute>
                 </gfc:carrierOfCharacteristics>
-            {% endfor %}
+               {% endfor %}
         </gfc:FC_FeatureType>
     </gfc:featureType>
+{% endfor %}
 </gfc:FC_FeatureCatalogue>
