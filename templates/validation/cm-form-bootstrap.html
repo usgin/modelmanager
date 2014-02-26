@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}CM Validator{% endblock %}
+
+{% block navhome %}{% endblock %}
+{% block navcmvalidator %}class="active"{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/validation/js/modelversions.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="span10 offset1">
+    <legend><h1>Validate & Fix CSV Data in a USGIN Model</h1></legend>
+    <div>
+      <form action="/validate/cm" name="csv-upload" method="post" enctype="multipart/form-data" > {% csrf_token %}
+        <legend>Choose the Content Model, Version and Feature Type to Validate Against</legend>
+    	<div class="control-group">
+          {{ form.content_model.errors }}
+          <label for="id_content_model" class="control-label">Content Model:</label>
+          <div class="controls">
+            {{ form.content_model }}
+          </div>
+    	</div>
+        <div class="control-group">
+          {{ form.version.errors }}
+          <label for="id_version" class="control-label">Version:</label>
+            <div class="controls">
+              {{ form.version }}
+            </div>
+    	  </div>
+    	<div class="control-group">
+          {{ form.feature_type.errors }}
+          <label for="id_feature_type" class="control-label">FeatureType:</label>
+          <div class="controls">
+            {{ form.feature_type }}
+          </div>
+    	</div>
+        <div class="control-group">
+          <label for="id_upload_file" class="control-label">Select file:</label>
+            <div class="controls">
+              {{form.file}}
+            </div>
+        </div>
+        <input type="submit" value="Upload" class="btn btn-success">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
