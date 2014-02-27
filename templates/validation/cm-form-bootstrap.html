@@ -36,9 +36,12 @@
             {{ form.feature_type }}
           </div>
     	</div>
+        <br>
         <div class="control-group">
           {{ form.file.errors }}
           <label for="id_upload_file" class="control-label">Select CSV file to validate:</label>
+
+        <p class="text-error"><em><small> Currently only files about 5MB or less (~7500 rows) can be processed. Larger files can still be processed if they are broken up. </small></em></p>
             <div class="controls">
               {{form.file}}
             </div>
