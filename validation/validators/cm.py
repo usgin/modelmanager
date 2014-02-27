@@ -4,34 +4,44 @@ from django.http import HttpResponse
 from django.shortcuts import render
 import csv
 import usginmodels
+import io
 
 
-def get_feature_types():
-    return ["ActiveFault","BaseMetals","CommonAnalytes","FreeGas","GasIsotopes","IsotopesDissolved","MajorDissolvedConstituents","MinorDissolvedConstituents","Nitrogen","WaterDissolvedGas","WaterIsotopes","WaterQuality","BaseMetals","CommonAnalytes","FreeGas","GasIsotopes","IsotopesDissolved","MajorDissolvedConstituents","MinorDissolvedConstituents","Nitrogen","SingleAnalyte","WaterDissolvedGas","WaterIsotopes","WaterQuality","BaseMetals","CommonAnalytes","FreeGas","GasIsotopes","IsotopesDissolved","MajorDissolvedConstituents","MinorDissolvedConstituents","Nitrogen","WaterDissolvedGas","WaterIsotopes","WaterQuality","BoreholeLithInterval","BoreholeTemperature","DirectUseSite","BoreholeLithIntercept","DrillStemTest","GeothermalArea","HeatFlow","HeatFlow","HeatPumpFacility","BoreholeTemperatureLASLog","PhysicalSample","GasAnalysis","LiquidAnalysis","PowerPlantFacility","RadiogenicHeatProduction","Isotopes","NobleGases","RareEarths","SingleAnalytes","StableIsotopes","TraceElements","USeries","Volatiles","WRMajorElements","Hypocenter","BoreholeTemperatureGeophysicalLog","ThermalConductivity","ThermalSpring","ThermalSpring","VolcanicVent","FluidProduction","Wellheader","WellLog","WellTest"]
+# def get_feature_types():
+#     return ['ActiveFault','SingleAnalyte','BaseMetals','WaterIsotopes','MajorDissolvedConstituents','FreeGas','WaterDissolvedGas','WaterQuality','IsotopesDissolved','GasIsotopes','Nitrogen','CommonAnalytes','MinorDissolvedConstituents','BoreholeLithIntercept','BoreholeLithInterval','BoreholeTemperature','ContourLine','DirectUseSite','DrillStemTest','Fault','ShearDisplacementStructureView','GeologicUnitView','ContactView','FluidFluxInjection','GeologicReservoir','GeothermalArea','GeothermalFluidProduction','PowerPlantFacility','GravityStation','HeatFlow','HeatPumpFacility','HydraulicProperty','PhysicalSample','LiquidAnalysis','GasAnalysis','PlantProduction','RadiogenicHeatProduction','Isotopes','NobleGases','RareEarths','Volatiles','StableIsotopes','USeries','WRMajorElements','SingleAnalytes','TraceElements','EarthquakeHypocenter','Hypocenter','MDThermalConductivity','ThermalConductivity','ThermalSpring','VolcanicVent','FluidProduction','Wellheader','WellLog','WellTest']
 
+
+#--------------------------------------------------------------------------------------------------------
+# A Form to gather user's input required to validate a CSV against some feature type in a ModelVersion
+#--------------------------------------------------------------------------------------------------------
 class UploadFileForm(forms.Form):
     # Redefine the constructor for this form
     def __init__(self, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)
 
-        # Set the feature_type field's choices to the available WFS FeatureTypes
-        # self.fields['feature_type'].choices = get_feature_types()
-        self.fields['feature_type'] = forms.ChoiceField(choices= [(typename, typename) for typename in get_feature_types()])
+        # Get a list of the all the layer names
+        layernames = []
+        models = usginmodels.get_models()
+        for model in models:
+            for version in model.versions:
+                for layer in version.layers:
+                    if layer.layer_name not in layernames:
+                        layernames.append(layer.layer_name)
+        layernames = sorted(layernames)
 
+        # layernames = get_feature_types()
+        self.fields['feature_type'] = forms.ChoiceField(choices= [(typename, typename) for typename in layernames],             widget=forms.Select(attrs={'class':'span5'})
+        )
 
-    file  = forms.FileField(
-        label='Select a CSV file which uses the content model specified above',
-        help_text='The first row of data must be the field names.'
-    )
+    file  = forms.FileField()
+
     content_model = forms.ModelChoiceField(queryset=ContentModel.objects.all(),
         widget=forms.Select(attrs={'class':'span5'})
     )
     version = forms.ModelChoiceField(queryset=ModelVersion.objects.all(),
         widget=forms.Select(attrs={'class':'span5'})
     )
-    feature_type = forms.ChoiceField(choices=[],
-        widget=forms.Select(attrs={'class':'span5'})
-    )
+    # feature_type = forms.ChoiceField()
 
 
 #--------------------------------------------------------------------------------------
@@ -40,12 +50,14 @@ class UploadFileForm(forms.Form):
 def validate_cm_form(req):
     if req.method == 'POST':
         form = UploadFileForm(req.POST, req.FILES)
-        if form.is_valid() or not form.is_valid():
+        if form.is_valid():
 
             uploadFile = req.FILES['file']
 
+
             if uploadFile.name.endswith(".csv"):
 
+                fileCSV = io.StringIO(unicode(uploadFile.read()), newline=None)
 
                 models = usginmodels.get_models()
 
@@ -56,30 +68,37 @@ def validate_cm_form(req):
                                 uri = v.uri
                                 break
 
-                valid, messages, dataCorrected, long_fields, srs = usginmodels.validate_file(
-                    uploadFile,
-                    uri,
-                    form.cleaned_data["feature_type"]
-                )
+                try:
+                    valid, messages, dataCorrected, long_fields, srs = usginmodels.validate_file(
+                        fileCSV,
+                        uri,
+                        form.cleaned_data["feature_type"]
+                    )
 
-                # Original Working
-                # csvstr = ""
-                # for line in uploadFile:
-                #     csvstr += str(line)
+                    # Original Working
+                    # csvstr = ""
+                    # for line in uploadFile:
+                    #     csvstr += str(line)
 
-                datastr = ""
-                for line in dataCorrected:
-                    for ele in line:
-                        datastr += "\"" + str(ele) + "\","
-                    datastr += "\r\n"
+                    datastr = ""
+                    for line in dataCorrected:
+                        for ele in line:
+                            datastr += "\"" + str(ele) + "\","
+                        datastr += "\r\n"
+
+                except:
+                    valid = False
+                    messages = "Invalid Layer"
+                    datastr = None
 
             else:
                 valid = False
-                messages = ["Only CSV files may be validated."]
+                messages = "Only CSV files may be validated."
+                datastr = None
 
             context = {
                 "valid": valid,
-                "errors": messages,
+                "messages": messages,
                 "dataCorrected": datastr,
                 "filepath": uploadFile.name
             }

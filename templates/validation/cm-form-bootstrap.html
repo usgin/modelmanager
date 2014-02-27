@@ -15,7 +15,6 @@
     <legend><h1>Validate & Fix CSV Data in a USGIN Model</h1></legend>
     <div>
       <form action="/validate/cm" name="csv-upload" method="post" enctype="multipart/form-data" > {% csrf_token %}
-        <legend>Choose the Content Model, Version and Feature Type to Validate Against</legend>
     	<div class="control-group">
           {{ form.content_model.errors }}
           <label for="id_content_model" class="control-label">Content Model:</label>
@@ -32,18 +31,19 @@
     	  </div>
     	<div class="control-group">
           {{ form.feature_type.errors }}
-          <label for="id_feature_type" class="control-label">FeatureType:</label>
+          <label for="id_feature_type" class="control-label">Feature Type:</label>
           <div class="controls">
             {{ form.feature_type }}
           </div>
     	</div>
         <div class="control-group">
-          <label for="id_upload_file" class="control-label">Select file:</label>
+          {{ form.file.errors }}
+          <label for="id_upload_file" class="control-label">Select CSV file to validate:</label>
             <div class="controls">
               {{form.file}}
             </div>
         </div>
-        <input type="submit" value="Upload" class="btn btn-success">
+        <input type="submit" value="Validate!" class="btn btn-success">
       </form>
     </div>
   </div>

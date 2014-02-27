@@ -9,25 +9,54 @@
 <div class="row">
   <div class="span12">
     <div class="alert alert-{%if valid %}success{% else %}error{% endif %}">
-      <h3>{% if valid %}PASSED{% else %}FAILED{% endif %} VALIDATION</h3>
+      <h3> {% if valid and not messages %}
+             PASSED VALIDATION
+           {% elif valid and messages %}
+             VALID WITH THE CHANGES BELOW
+           {% else %}
+             FAILED VALIDATION
+           {% endif %}</h3>
     </div>
     <hr>
-    {% if errors %}
+    <p> File selected: {{ filepath }} </p>
+  {% if not dataCorrected %}
+    <p class="text-error"> {{ messages }} </p>
+  {% else %}
+    {% if messages %}
+       <p class="text-error"> File does not conform to the selected content model.
+       {% if valid %} However, if the changes indicated below are acceptable, download the file below for a conforming copy of your data.</p>
+       {% else %} <p> The issues indicated in the error messages below must be made before the data will validate. If the changes indicated in the Warning and Notice messages are acceptable, download the file below and then in that document fix the indicated errors.</p>
+        {% endif %}
+
   	<ul class="unstyled">
-  		{% for error in errors %}
-  		<li>
-  		  <span class="label label-important">Error</span>
-  		  <span class="text-error">{{ error }}</span>
+     <legend>Messages from the Validator</legend>
+    <p class="muted"> <em><small> Note that in the messages below Row 0 indicates the header row.<br>If your CSV viewer indicates the header row as Row 1 the row numbers below will need to be incremented by 1.</small></em></p>
+  	  {% for message in messages %}
+        <li>
+          {% if "Error!" in message %}
+  		    <span class="label label-important">*</span>
+  		    <span class="text-error">
+          {% elif "Warning!" in message %}
+            <span class="text-warning">
+          {%  elif "Notice!" in message %}
+             <span class="text-info">
+          {% else %}
+             <span class="text-muted">
+          {% endif %}{{ message }}</span>
   		</li>
-  		{% endfor %}
+  	  {% endfor %}
   	</ul>
   	<hr>
-     <p> File validated: {{ filepath }} </p>
-  	{% endif %}
    <form action="/validate/dl_csv" name="csv-download" method="post">
        {% csrf_token %}
+       <legend>Download</legend>
+       <p> Click the button below to download a copy of your data which has applied to it the changes indicated in the Warning and Notice messages. </p>
    <button type="submit" name="new_data" value="{{ dataCorrected }}">Download!</button>
    </form>
+  {% else %}
+      <p class="text-success"> File conforms to the selected content model.</p>
+  {% endif %}
+  {% endif %}
   </div>
 </div>
 {% endblock %}
