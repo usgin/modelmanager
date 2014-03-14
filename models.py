@@ -150,7 +150,7 @@ class ContentModel(models.Model):
     
     # Provide this ContentModel's absolute URI
     def absolute_uri(self):
-        return '%s%s' % (settings.BASE_URL.rstrip('/'), self.relative_uri())
+        return '%s%s' % (settings.SCHEMA_URI.rstrip('/'), self.relative_uri())
     
     # Return a link to this ContentModel's RewriteRule
     def rewrite_rule_link(self):
