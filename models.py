@@ -139,7 +139,7 @@ class ContentModel(models.Model):
         
     # Return RegEx pattern for use in UriRegister module
     def stripped_regex(self):
-        return "dataschema/%s/" % self.label
+        return "xmlschema/%s/" % self.label
     
     def regex_pattern(self):
         return '^%s(\.[a-zA-Z]{3,4}|/)?$' % self.stripped_regex()
