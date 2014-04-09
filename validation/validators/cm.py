@@ -57,39 +57,46 @@ def validate_cm_form(req):
 
             if uploadFile.name.endswith(".csv"):
 
-                fileCSV = io.StringIO(unicode(uploadFile.read()), newline=None)
-
-                models = usginmodels.get_models()
-
-                for m in models:
-                    if m.title == form.cleaned_data["content_model"].title:
-                        for v in m.versions:
-                            if v.version == form.cleaned_data["version"].version:
-                                uri = v.uri
-                                break
-
                 try:
-                    valid, messages, dataCorrected, long_fields, srs = usginmodels.validate_file(
-                        fileCSV,
-                        uri,
-                        form.cleaned_data["feature_type"]
-                    )
-
-                    # Original Working
-                    # csvstr = ""
-                    # for line in uploadFile:
-                    #     csvstr += str(line)
-
-                    datastr = ""
-                    for line in dataCorrected:
-                        for ele in line:
-                            datastr += "\"" + str(ele) + "\","
-                        datastr += "\r\n"
+                    fileCSV = io.StringIO(unicode(uploadFile.read()), newline=None)
 
                 except:
                     valid = False
-                    messages = "Invalid Layer"
+                    messages = "Unable to read the CSV file. Check the file for invalid characters."
                     datastr = None
+
+                else:
+                    models = usginmodels.get_models()
+
+                    for m in models:
+                        if m.title == form.cleaned_data["content_model"].title:
+                            for v in m.versions:
+                                if v.version == form.cleaned_data["version"].version:
+                                    uri = v.uri
+                                    break
+
+                    try:
+                        valid, messages, dataCorrected, long_fields, srs = usginmodels.validate_file(
+                            fileCSV,
+                            uri,
+                            form.cleaned_data["feature_type"]
+                        )
+
+                        # Original Working
+                        # csvstr = ""
+                        # for line in uploadFile:
+                        #     csvstr += str(line)
+
+                        datastr = ""
+                        for line in dataCorrected:
+                            for ele in line:
+                                datastr += "\"" + str(ele) + "\","
+                            datastr += "\r\n"
+
+                    except:
+                        valid = False
+                        messages = "Invalid Layer"
+                        datastr = None
 
             else:
                 valid = False
